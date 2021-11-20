@@ -1,8 +1,11 @@
 package com.merttoptas.cointracker.utils
 
+import android.content.Context
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -27,6 +30,14 @@ fun View.remove(): View {
     }
     return this
 }
+
+fun Fragment.hideKeyboard(targetView: View) {
+    activity?.let {
+        val imm = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(targetView.windowToken, 0)
+    }
+}
+
 
 @BindingAdapter("app:loadUrlImage")
 fun ImageView.loadUrlImage(url: String?) {

@@ -1,4 +1,4 @@
-package com.merttoptas.cointracker.features
+package com.merttoptas.cointracker.features.splash
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.MainActivity
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.ActivitySplashBinding
+import com.merttoptas.cointracker.features.loginandregister.LoginAndRegisterActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
 
@@ -24,8 +27,8 @@ class SplashActivity : AppCompatActivity() {
         initAnimation()
 
         lifecycleScope.launch {
-            delay(5000)
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            delay(3000)
+            val intent = Intent(applicationContext, LoginAndRegisterActivity::class.java)
             startActivity(intent)
             finish()
         }

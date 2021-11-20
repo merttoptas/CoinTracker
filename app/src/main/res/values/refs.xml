@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="design_layout_snackbar_include" type="layout">@layout/layout_custom_snackbar_include</item>
+</resources>
