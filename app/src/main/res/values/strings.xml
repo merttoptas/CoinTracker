@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Coin Tracker</string>
+    <!-- Splash-->
+    <string name="coin_tracker_title">Coin Tracker</string>
+</resources>
