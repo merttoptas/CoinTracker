@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.merttoptas.cointracker.R
+import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
 import com.merttoptas.cointracker.features.base.IViewState
@@ -16,10 +17,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) :
+class LoginViewModel @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val dataStoreManager: DataStoreManager
+) :
     BaseViewModel<LoginViewState, LoginViewEffect>() {
-
-    private val coroutineScope = MainScope()
 
     fun emailChange(value: String) {
         setState { currentState.copy(email = value) }
@@ -43,6 +45,8 @@ class LoginViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth)
                         if (task.isSuccessful) {
                             setEffect(LoginViewEffect.SuccessfullyLogin)
                             setState { currentState.copy(isLoading = false) }
+                            viewModelScope.launch { dataStoreManager.updateUserLogin(true) }
+
                         } else {
                             setEffect(LoginViewEffect.FailedLogin(task.exception?.message))
                             setState { currentState.copy(isLoading = false) }

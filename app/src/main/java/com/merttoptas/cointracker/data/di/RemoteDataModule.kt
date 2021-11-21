@@ -1,6 +1,8 @@
 package com.merttoptas.cointracker.data.di
 
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
+import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.data.remote.api.CoinService
 import com.merttoptas.cointracker.data.remote.source.CoinRemoteDataSource
 import com.merttoptas.cointracker.data.remote.source.impl.CoinRemoteDataSourceImpl
@@ -8,6 +10,7 @@ import com.merttoptas.cointracker.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -66,6 +69,11 @@ object RemoteDataModule {
     @Singleton
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideDataStoreManager(@ApplicationContext appContext: Context): DataStoreManager =
+        DataStoreManager(appContext)
 
 }
 

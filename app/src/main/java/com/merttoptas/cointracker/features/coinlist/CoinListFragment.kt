@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentCoinListBinding
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewEffect
@@ -41,7 +42,6 @@ class CoinListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(requireView())
-
 
         lifecycleScope.launchWhenResumed {
             launch {

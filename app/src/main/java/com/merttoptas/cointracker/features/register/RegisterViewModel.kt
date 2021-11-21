@@ -3,6 +3,7 @@ package com.merttoptas.cointracker.features.register
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
 import com.merttoptas.cointracker.features.base.IViewState
@@ -12,7 +13,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) :
+class RegisterViewModel @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val dataStoreManager: DataStoreManager
+) :
     BaseViewModel<RegisterViewState, RegisterViewEffect>() {
 
     private val coroutineScope = MainScope()
@@ -40,14 +44,20 @@ class RegisterViewModel @Inject constructor(private val firebaseAuth: FirebaseAu
                     if (task.isSuccessful) {
                         setState { currentState.copy(isLoading = false) }
                         setEffect(RegisterViewEffect.SuccessfullyRegister)
+                        viewModelScope.launch { dataStoreManager.updateUserLogin(true) }
                     } else {
                         setEffect(RegisterViewEffect.FailedRegister)
-                        setState { currentState.copy(isLoading = false, errorMessage = task.exception?.message) }
+                        setState {
+                            currentState.copy(
+                                isLoading = false,
+                                errorMessage = task.exception?.message
+                            )
+                        }
                     }
 
                 }
 
-                currentState.validFields()?.let {
+            currentState.validFields()?.let {
                 setState { currentState.copy(errorMessage = it.toString(), isLoading = false) }
             } ?: kotlin.run {
 
