@@ -8,15 +8,14 @@ import kotlinx.parcelize.Parcelize
 data class CoinDetailResponse(
     @SerializedName("name")
     val name: String,
+    @SerializedName("symbol")
+    val symbol: String,
     @SerializedName("market_data")
     val marketData: MarketData?,
-
     @SerializedName("image")
     val image: CoinImage?,
-
     @SerializedName("description")
     val description: CoinDescription?,
-
     @SerializedName("hashing_algorithm")
     val hashing_algorithm: String?
 ) : Parcelable

@@ -2,9 +2,11 @@ package com.merttoptas.cointracker.data.di
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.data.local.database.CoinDatabase
 import com.merttoptas.cointracker.data.remote.api.CoinService
+import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -82,6 +84,17 @@ object RemoteDataModule {
     @Singleton
     @Provides
     fun provideCoinDao(coinDatabase: CoinDatabase) = coinDatabase.coinDao()
+
+    @Singleton
+    @Provides
+    fun provideFirebaseService(
+        firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore
+    ): FirebaseService = FirebaseService(firebaseAuth, firebaseFirestore)
+
+    @Singleton
+    @Provides
+    fun provideFirebaseDatabase(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
 }
 

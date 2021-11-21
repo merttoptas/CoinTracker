@@ -26,8 +26,7 @@
                 android:elevation="5dp"
                 app:title="Coin List"
                 app:titleCentered="true"
-                app:titleTextColor="@color/black">
-            </com.google.android.material.appbar.MaterialToolbar>
+                app:titleTextColor="@color/black" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -54,6 +53,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/coinSearchView" />
+            app:layout_constraintTop_toBottomOf="@+id/coinSearchView"
+            tools:listitem="@layout/layout_coin_list_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

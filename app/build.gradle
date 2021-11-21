@@ -102,6 +102,9 @@ dependencies {
     //Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:21.0.1'
 
+    //Firebase Firestore
+    implementation 'com.google.firebase:firebase-firestore:24.0.0'
+
     //Data Store
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"

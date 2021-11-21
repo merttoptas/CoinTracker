@@ -3,6 +3,8 @@ package com.merttoptas.cointracker.features.coindetail.viewmodel
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.merttoptas.cointracker.data.model.CoinDetailResponse
+import com.merttoptas.cointracker.data.model.CoinResponse
+import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.data.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinDetailViewModel @Inject constructor(
     private val coinRepository: CoinRepository,
+    private val firebaseService: FirebaseService,
     savedStateHandle: SavedStateHandle
 ) :
     BaseViewModel<CoinDetailViewState, CoinDetailViewEffect>() {
@@ -31,7 +34,14 @@ class CoinDetailViewModel @Inject constructor(
                 coinRepository.getCoinDetail(safeCoinId).collect {
                     when (it) {
                         is DataState.Success -> {
-                            setState { currentState.copy(coinDetail = it.data, isLoading = false) }
+                            setState {
+                                currentState.copy(
+                                    coinDetail = it.data,
+                                    isLoading = false,
+                                    coinId = safeCoinId
+                                )
+                            }
+                            getFavoriteCoins()
                         }
                         is DataState.Error -> {
                             setState {
@@ -50,16 +60,96 @@ class CoinDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateFavoriteCoin() {
+        val data = HashMap<String, String>()
+        data["id"] = currentState.coinId.toString()
+        data["name"] = currentState.coinDetail?.name ?: ""
+        data["symbol"] = currentState.coinDetail?.symbol ?: ""
+
+        setState { currentState.copy(coin = data) }
+
+        currentState.favoriteCoins?.find { coinResponse -> coinResponse.coinId == currentState.coinId }
+            ?.let {
+                firebaseService.deleteFavoriteCoin(
+                    firebaseService.getUid() ?: "",
+                    currentState.coin
+                )?.let {
+                    setEffect(
+                        CoinDetailViewEffect.StatusFavorite(
+                            status = it.first,
+                            errorMessage = it.second
+                        )
+                    )
+                    setState { currentState.copy(isFavorite = false) }
+                }
+                prepareFavoriteList()
+
+            } ?: kotlin.run {
+            firebaseService.insertFavoriteCoins(
+                firebaseService.getUid() ?: "",
+                coin = currentState.coin
+            )?.let {
+                setEffect(
+                    CoinDetailViewEffect.StatusFavorite(
+                        status = it.first,
+                        errorMessage = it.second
+                    )
+                )
+            }
+            prepareFavoriteList()
+        }
+    }
+
+    private fun updateImageStatus() {
+        currentState.favoriteCoins?.find { coinResponse -> coinResponse.coinId == currentState.coinId }
+            ?.let {
+                setState { currentState.copy(isFavorite = true) }
+            } ?: kotlin.run {
+            setState { currentState.copy(isFavorite = false) }
+        }
+    }
+
+    private fun getFavoriteCoins() {
+        firebaseService.getUid()?.let {
+            firebaseService.getFavoriteCoins(it).get().addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    val coinList = ArrayList<CoinResponse>()
+                    result.forEach {
+                        val id = it.data["id"].toString()
+                        val name = it.data["name"].toString()
+                        val symbol = it.data["symbol"].toString()
+                        val coin = CoinResponse(id, symbol, name)
+                        coinList.add(coin)
+                    }
+                    Log.d("deneme1", "forEach" + coinList.toString())
+                    setState { currentState.copy(favoriteCoins = coinList) }
+                }
+                updateImageStatus()
+            }.addOnFailureListener {
+                setEffect(CoinDetailViewEffect.Failed(it.message))
+            }
+        }
+    }
+
+    private fun prepareFavoriteList() {
+        setState { (currentState.copy(favoriteCoins = arrayListOf())) }
+        getFavoriteCoins()
+    }
+
     override fun createInitialState() = CoinDetailViewState()
 }
 
 data class CoinDetailViewState(
+    val isFavorite: Boolean? = null,
+    val coinId: String? = null,
+    val coin: HashMap<String, String> = hashMapOf(),
+    val favoriteCoins: ArrayList<CoinResponse>? = null,
     val coinDetail: CoinDetailResponse? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) : IViewState
 
 sealed class CoinDetailViewEffect : IViewEffect {
-    object SuccessfullyLogin : CoinDetailViewEffect()
-    class FailedLogin(val errorMessage: String?) : CoinDetailViewEffect()
+    class StatusFavorite(val status: Boolean, val errorMessage: String?) : CoinDetailViewEffect()
+    class Failed(val errorMessage: String?) : CoinDetailViewEffect()
 }

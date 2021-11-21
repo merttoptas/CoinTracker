@@ -10,9 +10,13 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.merttoptas.cointracker.databinding.FragmentCoinDetailBinding
 import com.merttoptas.cointracker.features.base.BaseFragment
+import com.merttoptas.cointracker.features.coindetail.viewmodel.CoinDetailViewEffect
 import com.merttoptas.cointracker.features.coindetail.viewmodel.CoinDetailViewModel
+import com.merttoptas.cointracker.utils.SnackBarBuilder
+import com.merttoptas.cointracker.utils.SnackBarEnum
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CoinDetailFragment : BaseFragment() {
@@ -41,10 +45,39 @@ class CoinDetailFragment : BaseFragment() {
         navController = Navigation.findNavController(requireView())
 
         lifecycleScope.launchWhenResumed {
-            viewModel.viewState.collect {
-                if (it.isLoading) showProgress() else hideProgress()
-                binding.dataHolder = it.coinDetail
+            launch {
+                viewModel.viewState.collect {
+                    if (it.isLoading) showProgress() else hideProgress()
+                    binding.dataHolder = it.coinDetail
+                    binding.isFavorite = it.isFavorite ?: false
+                }
             }
+            launch {
+                viewModel.viewEffect.collect {
+                    when (it) {
+                        is CoinDetailViewEffect.Failed -> {
+                            SnackBarBuilder(
+                                this@CoinDetailFragment,
+                                it.errorMessage.toString(),
+                                SnackBarEnum.ERROR
+                            ).show()
+                        }
+                        is CoinDetailViewEffect.StatusFavorite -> {
+                            if (it.status.not()) {
+                                SnackBarBuilder(
+                                    this@CoinDetailFragment,
+                                    it.errorMessage.toString(),
+                                    SnackBarEnum.ERROR
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.floatActionFavoriteBtn.setOnClickListener {
+            viewModel.updateFavoriteCoin()
         }
     }
 

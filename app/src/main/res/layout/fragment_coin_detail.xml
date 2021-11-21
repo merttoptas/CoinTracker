@@ -4,19 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="viewModel"
-            type="com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewModel" />
-
-        <variable
-            name="listener"
-            type="com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener" />
-
         <variable
             name="dataHolder"
             type="com.merttoptas.cointracker.data.model.CoinDetailResponse" />
 
+        <variable
+            name="isFavorite"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,7 +44,7 @@
         </androidx.cardview.widget.CardView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fr_coin_detail_add_favorite"
+            android:id="@+id/floatActionFavoriteBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16sp"
@@ -59,7 +53,7 @@
             app:backgroundTint="#F5CEBE"
             app:layout_constraintBottom_toBottomOf="@+id/cardImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="@color/white" />
+            android:tint="@{isFavorite ? @color/red : @color/white}" />
 
         <ScrollView
             android:layout_width="0dp"

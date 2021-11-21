@@ -4,22 +4,22 @@ import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.merttoptas.cointracker.data.local.DataStoreManager
+import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
 import com.merttoptas.cointracker.features.base.IViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
+    private val firebaseService: FirebaseService
 ) :
     BaseViewModel<RegisterViewState, RegisterViewEffect>() {
-
-    private val coroutineScope = MainScope()
 
     fun emailChange(value: String) {
         setState { currentState.copy(email = value) }
@@ -42,6 +42,12 @@ class RegisterViewModel @Inject constructor(
             )
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        firebaseAuth.currentUser?.uid?.let {
+                            val data = HashMap<String, Any>()
+                            data["email"] = currentState.email ?: ""
+                            firebaseService.setUser(it, data)
+                        }
+
                         setState { currentState.copy(isLoading = false) }
                         setEffect(RegisterViewEffect.SuccessfullyRegister)
                         viewModelScope.launch { dataStoreManager.updateUserLogin(true) }
@@ -62,8 +68,6 @@ class RegisterViewModel @Inject constructor(
             } ?: kotlin.run {
 
             }
-
-
         }
     }
 

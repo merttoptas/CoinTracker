@@ -1,6 +1,5 @@
 package com.merttoptas.cointracker.features.splash
 
-import com.google.firebase.auth.FirebaseAuth
 import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.data.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
@@ -16,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
-    private val firebaseAuth: FirebaseAuth,
     private val coinRepository: CoinRepository,
 ) : BaseViewModel<SplashViewState, SplashViewEffect>() {
     override fun createInitialState() = SplashViewState()
@@ -38,7 +36,6 @@ class SplashViewModel @Inject constructor(
                 when (it) {
                     is DataState.Success -> {
                         setState { currentState.copy(geckoSays = it.data.gecko_says) }
-
                     }
                     is DataState.Error -> {
                     }
@@ -49,7 +46,6 @@ class SplashViewModel @Inject constructor(
         }
     }
 }
-
 
 data class SplashViewState(
     val isLoading: Boolean = false,
