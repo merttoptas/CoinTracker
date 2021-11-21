@@ -3,9 +3,8 @@ package com.merttoptas.cointracker.data.di
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.merttoptas.cointracker.data.local.DataStoreManager
+import com.merttoptas.cointracker.data.local.database.CoinDatabase
 import com.merttoptas.cointracker.data.remote.api.CoinService
-import com.merttoptas.cointracker.data.remote.source.CoinRemoteDataSource
-import com.merttoptas.cointracker.data.remote.source.impl.CoinRemoteDataSourceImpl
 import com.merttoptas.cointracker.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -75,6 +74,15 @@ object RemoteDataModule {
     fun provideDataStoreManager(@ApplicationContext appContext: Context): DataStoreManager =
         DataStoreManager(appContext)
 
+    @Singleton
+    @Provides
+    fun provideCoinDatabase(@ApplicationContext appContext: Context) =
+        CoinDatabase.getDatabase(appContext)
+
+    @Singleton
+    @Provides
+    fun provideCoinDao(coinDatabase: CoinDatabase) = coinDatabase.coinDao()
+
 }
 
 class AuthInterceptor @Inject constructor() : Interceptor {
@@ -84,5 +92,4 @@ class AuthInterceptor @Inject constructor() : Interceptor {
         requestBuilder.addHeader("Content-Type", "application/json")
         return chain.proceed(requestBuilder.build())
     }
-
 }

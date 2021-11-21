@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -44,9 +45,9 @@ fun ImageView.loadUrlImage(url: String?) {
     Glide.with(this).load(url).into(this)
 }
 
-@BindingAdapter("app:loadUrlRoundedImage")
-fun ImageView.loadUrlRoundedImage(url: String?) {
-    url?.let {
-        Glide.with(this).asBitmap().load(url).apply(RequestOptions.bitmapTransform(RoundedCorners(10))).into(this)
+@BindingAdapter("doubleToString")
+fun doubleToString(textView: TextView, value: Double?) {
+    value?.let {
+        textView.text = it.toString()
     }
 }

@@ -18,6 +18,7 @@ import com.merttoptas.cointracker.features.loginandregister.LoginAndRegisterActi
 import com.merttoptas.cointracker.utils.NetworkConnection
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
+import com.merttoptas.cointracker.utils.helper.NavigationHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -80,8 +81,7 @@ class SplashActivity : AppCompatActivity() {
     private fun startLoginAndRegisterActivity() {
         lifecycleScope.launch {
             delay(2000)
-            val intent = Intent(applicationContext, LoginAndRegisterActivity::class.java)
-            startActivity(intent)
+            NavigationHelper.startLoginAndRegisterActivity(applicationContext)
             finish()
         }
     }
@@ -89,8 +89,7 @@ class SplashActivity : AppCompatActivity() {
     private fun startMainActivity() {
         lifecycleScope.launch {
             delay(2000)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
+            NavigationHelper.startMainActivity(applicationContext)
             finish()
         }
     }

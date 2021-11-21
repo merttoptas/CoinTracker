@@ -7,10 +7,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/fragment_horizontal_margin"
-        android:paddingTop="@dimen/fragment_vertical_margin"
-        android:paddingRight="@dimen/fragment_horizontal_margin"
-        android:paddingBottom="@dimen/fragment_vertical_margin"
+        android:padding="@dimen/fragment_horizontal_margin"
         tools:context=".features.coinlist.LoginFragment">
 
         <ImageView
@@ -48,6 +45,7 @@
             android:layout_marginEnd="24dp"
             android:background="@drawable/background_edittext_rounded"
             android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="12dp"
             android:hint="E-Mail"
             android:inputType="textEmailAddress"
             android:padding="10dp"
@@ -65,8 +63,11 @@
             android:layout_marginEnd="24dp"
             android:background="@drawable/background_edittext_rounded"
             android:drawableStart="@drawable/ic_baseline_lock_24"
+            android:drawablePadding="12dp"
+            android:ems="12"
             android:hint="Password"
             android:inputType="textPassword"
+            android:maxLength="12"
             android:padding="10dp"
             app:hintTextColor="#7A8089"
             app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +91,6 @@
             app:layout_constraintTop_toBottomOf="@+id/etPassword"
             app:tint="@color/white" />
 
-
         <TextView
             android:id="@+id/tvRegister"
             android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
             android:clickable="true"
             android:focusable="true"
             android:fontFamily="@font/poppins_medium"
-            android:text="Don’t have an account? Register now"
+            android:text="@string/login_register_text_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

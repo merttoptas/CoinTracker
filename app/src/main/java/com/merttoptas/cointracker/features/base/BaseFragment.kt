@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.merttoptas.cointracker.utils.CoinDialogProgress
 
 abstract class BaseFragment : Fragment() {
     private var progressBar: CoinDialogProgress? = null
+    private var navController: NavController? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initProgressBar()
+        navController = Navigation.findNavController(requireView())
     }
 
     fun showProgress() {

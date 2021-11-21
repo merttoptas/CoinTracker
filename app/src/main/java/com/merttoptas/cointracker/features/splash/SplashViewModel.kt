@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val firebaseAuth: FirebaseAuth,
-    private val coinRepository: CoinRepository
+    private val coinRepository: CoinRepository,
 ) : BaseViewModel<SplashViewState, SplashViewEffect>() {
     override fun createInitialState() = SplashViewState()
     private val coroutineScope = MainScope()

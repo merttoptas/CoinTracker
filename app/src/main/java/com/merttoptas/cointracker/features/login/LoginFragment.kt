@@ -1,5 +1,6 @@
 package com.merttoptas.cointracker.features.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.merttoptas.cointracker.MainActivity
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentLoginBinding
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
+import com.merttoptas.cointracker.utils.helper.NavigationHelper
 import com.merttoptas.cointracker.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -64,9 +67,9 @@ class LoginFragment : BaseFragment() {
                             SnackBarBuilder(
                                 this@LoginFragment,
                                 "Succesfully",
-                                SnackBarEnum.ERROR
+                                SnackBarEnum.SUCCESS
                             ).show()
-
+                            NavigationHelper.startMainActivity(requireContext())
                         }
                         is LoginViewEffect.FailedLogin -> {
                             effect.errorMessage?.let {

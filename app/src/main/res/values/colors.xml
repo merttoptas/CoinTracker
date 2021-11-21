@@ -11,5 +11,7 @@
     <color name="red">#F05945</color>
     <color name="dark_orange">#FF7800</color>
     <color name="dark_green">#9AE66E</color>
+    <color name="text_color_black_b">#0f1f2c</color>
+
 
 </resources>

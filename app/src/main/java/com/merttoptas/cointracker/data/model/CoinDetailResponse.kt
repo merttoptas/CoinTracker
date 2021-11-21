@@ -6,7 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CoinDetailResponse(
-
+    @SerializedName("name")
+    val name: String,
     @SerializedName("market_data")
     val marketData: MarketData?,
 
