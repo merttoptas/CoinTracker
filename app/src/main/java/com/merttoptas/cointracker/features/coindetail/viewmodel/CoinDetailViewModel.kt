@@ -62,9 +62,13 @@ class CoinDetailViewModel @Inject constructor(
 
     fun updateFavoriteCoin() {
         val data = HashMap<String, String>()
+
         data["id"] = currentState.coinId.toString()
         data["name"] = currentState.coinDetail?.name ?: ""
         data["symbol"] = currentState.coinDetail?.symbol ?: ""
+        data["image"] = currentState.coinDetail?.image?.imageLarge ?: ""
+        data["currentPrice"] = currentState.coinDetail?.marketData?.current_price?.usd.toString()
+        data["changePercent"] = currentState.coinDetail?.marketData?.priceChancePercentage_24h.toString()
 
         setState { currentState.copy(coin = data) }
 
@@ -118,7 +122,18 @@ class CoinDetailViewModel @Inject constructor(
                         val id = it.data["id"].toString()
                         val name = it.data["name"].toString()
                         val symbol = it.data["symbol"].toString()
-                        val coin = CoinResponse(id, symbol, name)
+                        val image = it.data["image"].toString()
+                        val currentPrice = it.data["currentPrice"].toString()
+                        val changePercent = it.data["changePercent"].toString()
+
+                        val coin = CoinResponse(
+                            id,
+                            symbol,
+                            name,
+                            image,
+                            currentPrice = currentPrice.toDoubleOrNull(),
+                            changePercent = changePercent.toDoubleOrNull()
+                        )
                         coinList.add(coin)
                     }
                     Log.d("deneme1", "forEach" + coinList.toString())

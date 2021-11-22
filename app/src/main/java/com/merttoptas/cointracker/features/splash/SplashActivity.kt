@@ -1,20 +1,13 @@
 package com.merttoptas.cointracker.features.splash
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.airbnb.lottie.utils.Utils
-import com.merttoptas.cointracker.MainActivity
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.ActivitySplashBinding
-import com.merttoptas.cointracker.features.login.LoginViewModel
-import com.merttoptas.cointracker.features.loginandregister.LoginAndRegisterActivity
 import com.merttoptas.cointracker.utils.NetworkConnection
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
@@ -38,9 +31,7 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initAnimation()
-
         startApp()
-
     }
 
     private fun initAnimation() {
@@ -56,7 +47,7 @@ class SplashActivity : AppCompatActivity() {
         } else {
             SnackBarBuilder(
                 this,
-                "Lütfen internet bağlantınızı kontrol ediniz.",
+                getString(R.string.internet_connection_failed_text),
                 SnackBarEnum.ERROR
             ).show()
         }
@@ -89,7 +80,7 @@ class SplashActivity : AppCompatActivity() {
     private fun startMainActivity() {
         lifecycleScope.launch {
             delay(2000)
-            NavigationHelper.startMainActivity(applicationContext)
+            NavigationHelper.startMainActivity(this@SplashActivity, applicationContext)
             finish()
         }
     }

@@ -3,62 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/coinListFragment">
 
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.merttoptas.cointracker.features.login.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login">
+        android:id="@+id/coinListFragment"
+        android:name="com.merttoptas.cointracker.features.coinlist.CoinListFragment"
+        android:label="CoinListFragment"
+        tools:layout="@layout/fragment_coin_list">
         <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment"
+            android:id="@+id/action_coinListFragment_to_coinDetailFragment"
+            app:destination="@id/coinDetailFragment"
             app:enterAnim="@anim/slide_in_foom_right"
             app:exitAnim="@anim/slide_out_to_left" />
-        <action
-            android:id="@+id/action_loginFragment_to_navigation3"
-            app:destination="@id/navigation3" />
     </fragment>
-
     <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.merttoptas.cointracker.features.register.RegisterFragment"
-        android:label="fragment_register">
+        android:id="@+id/coinDetailFragment"
+        android:name="com.merttoptas.cointracker.features.coindetail.CoinDetailFragment"
+        android:label="CoinDetailFragment"
+        tools:layout="@layout/fragment_coin_detail">
+        <argument
+            android:name="coinsId"
+            app:argType="string" />
+
         <action
-            android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
+            android:id="@+id/action_coinDetailFragment_to_coinListFragment"
+            app:destination="@id/coinListFragment"
             app:enterAnim="@anim/slide_in_foom_right"
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_out_to_left"
             app:popExitAnim="@anim/slide_in_foom_right" />
+        <action
+            android:id="@+id/action_coinDetailFragment_to_myFavoriteFragment"
+            app:destination="@id/myFavoriteFragment"
+            app:enterAnim="@anim/slide_in_foom_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_out_to_left"
+            app:popExitAnim="@anim/slide_in_foom_right" />
+
     </fragment>
 
-    <navigation
-        android:id="@+id/navigation3"
-        app:startDestination="@id/coinListFragment">
-        <fragment
-            android:id="@+id/coinListFragment"
-            android:name="com.merttoptas.cointracker.features.coinlist.CoinListFragment"
-            android:label="CoinListFragment">
-            <action
-                android:id="@+id/action_coinListFragment_to_coinDetailFragment"
-                app:destination="@id/coinDetailFragment" />
-        </fragment>
+    <fragment
+        android:id="@+id/myFavoriteFragment"
+        android:name="com.merttoptas.cointracker.features.myfavorite.MyFavoriteFragment"
+        android:label="MyFavoriteFragment"
+        tools:layout="@layout/fragment_coin_detail">
         <action
-            android:id="@+id/action_fragment_to_second_graph"
-            app:destination="@id/navigation3" />
-        <fragment
-            android:id="@+id/coinDetailFragment"
-            android:name="com.merttoptas.cointracker.features.coindetail.CoinDetailFragment"
-            android:label="CoinDetailFragment">
-
-            <argument
-                android:name="coinsId"
-                app:argType="string" />
-
-            <action
-                android:id="@+id/action_coinDetailFragment_to_coinListFragment"
-                app:destination="@id/coinListFragment" />
-        </fragment>
-    </navigation>
+            android:id="@+id/action_myFavoriteFragment_to_coinDetailFragment"
+            app:destination="@id/coinDetailFragment"
+            app:enterAnim="@anim/slide_in_foom_right"
+            app:exitAnim="@anim/slide_out_to_left" />
+    </fragment>
 </navigation>

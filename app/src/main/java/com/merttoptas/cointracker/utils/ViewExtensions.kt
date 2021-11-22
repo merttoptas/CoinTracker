@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
+import com.merttoptas.cointracker.R
+import java.text.DecimalFormat
 
 fun View.show(): View {
     if (visibility != View.VISIBLE) {
@@ -49,5 +49,25 @@ fun ImageView.loadUrlImage(url: String?) {
 fun doubleToString(textView: TextView, value: Double?) {
     value?.let {
         textView.text = it.toString()
+    }
+}
+
+@BindingAdapter("percentToString")
+fun percentToString(textView: TextView, value: Double?) {
+    val formatter = DecimalFormat("%0.00")
+    textView.text = formatter.format(value)
+    if (value.toString().contains("-")) {
+        textView.setTextColor(textView.context.resources.getColor(R.color.red))
+    } else {
+        textView.setTextColor(textView.context.resources.getColor(R.color.dark_green))
+    }
+}
+
+@BindingAdapter("percentStatusIV")
+fun percentStatusIV(imageView: ImageView, value: Double?) {
+    if (value.toString().contains("-")) {
+        imageView.setBackgroundResource(R.drawable.ic_arrow_downward)
+    } else {
+        imageView.setBackgroundResource(R.drawable.ic_arrrow_upward)
     }
 }

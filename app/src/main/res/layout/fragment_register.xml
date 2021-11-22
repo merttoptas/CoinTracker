@@ -87,6 +87,7 @@
             android:drawableStart="@drawable/ic_baseline_lock_24"
             android:drawablePadding="12dp"
             android:hint="Confirm Password"
+            android:inputType="textPassword"
             android:maxLength="12"
             android:padding="10dp"
             app:hintTextColor="#7A8089"

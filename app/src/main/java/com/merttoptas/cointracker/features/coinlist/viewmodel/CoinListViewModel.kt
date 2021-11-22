@@ -1,15 +1,16 @@
 package com.merttoptas.cointracker.features.coinlist.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import androidx.sqlite.db.SimpleSQLiteQuery
-import com.merttoptas.cointracker.data.local.database.CoinDao
-import com.merttoptas.cointracker.data.local.database.CoinListEntity
+import com.merttoptas.cointracker.data.local.database.toCoinResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
+import com.merttoptas.cointracker.data.model.toCoinListEntity
+import com.merttoptas.cointracker.data.repository.CoinDatabaseRepository
 import com.merttoptas.cointracker.data.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
 import com.merttoptas.cointracker.features.base.IViewState
 import com.merttoptas.cointracker.utils.DataState
+import com.merttoptas.cointracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
     private val coinRepository: CoinRepository,
-    private val coinDao: CoinDao
+    private val coinDao: CoinDatabaseRepository
 ) :
     BaseViewModel<CoinListViewState, CoinListViewEffect>() {
 
@@ -60,7 +61,7 @@ class CoinListViewModel @Inject constructor(
     private fun insertCoinListDataBase(coinList: List<CoinResponse>) {
         viewModelScope.launch {
             coinList.map {
-                CoinListEntity(coinId = it.coinId, symbol = it.symbol, name = it.name)
+                it.toCoinListEntity()
             }.let {
                 coinDao.insertCoinList(it)
             }
@@ -69,11 +70,9 @@ class CoinListViewModel @Inject constructor(
 
     private suspend fun getFilterCoinData(query: String) {
         viewModelScope.launch {
-            val simpleSQLiteQuery =
-                SimpleSQLiteQuery("SELECT * FROM Coins WHERE coinName LIKE '%$query%' OR coinSymbol LIKE '%$query%'")
-            coinDao.searchCoin(simpleSQLiteQuery).let { coinListEntitiy ->
-                coinListEntitiy.map {
-                    CoinResponse(coinId = it.coinId, symbol = it.symbol, name = it.name)
+            coinDao.searchCoin(Utils.getSearchQuery(query)).collect {  coinListEntity ->
+                coinListEntity.map { safeList ->
+                    safeList.toCoinResponse()
                 }.let {
                     setState { currentState.copy(filteredCoinList = it) }
                 }

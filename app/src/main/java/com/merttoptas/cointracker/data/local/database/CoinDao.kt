@@ -2,17 +2,17 @@ package com.merttoptas.cointracker.data.local.database
 
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CoinDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCoinList(coinList: List<CoinListEntity>): List<Long>
+    suspend fun insertCoinList(coinList: List<CoinListEntity>)
 
     @RawQuery(observedEntities = [CoinListEntity::class])
-    suspend fun searchCoin(query: SupportSQLiteQuery): List<CoinListEntity>
+    fun searchCoin(query: SupportSQLiteQuery): Flow<List<CoinListEntity>>
 
-    @Update
-    suspend fun changeCoinListEntity(coinList: List<CoinListEntity>)
-
+    @Query("DELETE FROM Coins")
+    fun deleteAll()
 }

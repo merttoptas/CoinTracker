@@ -25,6 +25,7 @@ class FirebaseService @Inject constructor(
         coin: HashMap<String, String>
     ): Pair<Boolean, String?>? {
         var data: Pair<Boolean, String>? = null
+
         firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
             .let { collectionReference ->
                 collectionReference.document(coin["id"] ?: "")
@@ -32,11 +33,13 @@ class FirebaseService @Inject constructor(
                     .addOnSuccessListener { data = Pair(true, "") }
                     .addOnFailureListener { data = Pair(false, it.message.toString()) }
             }
+
         return data
     }
 
     fun deleteFavoriteCoin(userId: String, coin: HashMap<String, String>): Pair<Boolean, String?>? {
         var data: Pair<Boolean, String>? = null
+
         firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
             .let { collectionReference ->
                 collectionReference.document(coin["id"] ?: "")
@@ -44,6 +47,7 @@ class FirebaseService @Inject constructor(
                     .addOnSuccessListener { data = Pair(true, "") }
                     .addOnFailureListener { data = Pair(false, it.message.toString()) }
             }
+
         return data
     }
 

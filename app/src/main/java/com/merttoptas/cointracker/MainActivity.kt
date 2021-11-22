@@ -3,7 +3,9 @@ package com.merttoptas.cointracker
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import androidx.navigation.ui.setupWithNavController
 import com.merttoptas.cointracker.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +19,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        navController = Navigation.findNavController(binding.root)
-        navController?.navigate(R.id.action_loginFragment_to_navigation3)
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.coinListFragment, true)
+            .build()
+        navController?.navigate(R.id.coinListFragment, null, navOptions)
+        binding.bottomNavigation.setupWithNavController(navController!!)
     }
 }

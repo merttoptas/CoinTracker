@@ -12,6 +12,10 @@
     <color name="dark_orange">#FF7800</color>
     <color name="dark_green">#9AE66E</color>
     <color name="text_color_black_b">#0f1f2c</color>
-
-
+    <color name="mainly_blue">#325288</color>
+    <color name="dark_shade_cyan">#114E60</color>
+    <color name="very_light_brown">#f4eee8</color>
+    <color name="light_red_orange">#F5CEBE</color>
+    <color name="very_pale_violet">#fcfbff</color>
+    <color name="subtitle_text_color">#616161</color>
 </resources>

@@ -7,7 +7,7 @@
 
         <variable
             name="listener"
-            type="com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener" />
+            type="com.merttoptas.cointracker.features.myfavorite.adapter.OnClickListener" />
 
         <variable
             name="dataHolder"
@@ -104,18 +104,18 @@
                     android:gravity="center"
                     app:percentStatusIV="@{dataHolder.changePercent}"
                     tools:src="@drawable/ic_arrow_downward" />
-
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/favouriteImageView"
                 android:layout_width="@dimen/image_icon_size"
                 android:layout_height="@dimen/image_icon_size"
-                android:src="@drawable/ic_arrow_forward"
+                android:src="@drawable/ic_favorite_black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_arrow_forward" />
+                app:tint="@color/red"
+                tools:src="@drawable/ic_favorite_black" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -1,16 +1,10 @@
 package com.merttoptas.cointracker.features.coinlist
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentCoinListBinding
 import com.merttoptas.cointracker.features.base.BaseFragment
@@ -24,30 +18,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CoinListFragment : BaseFragment(), OnClickListener {
+class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListener {
 
     private val loginViewModel by viewModels<CoinListViewModel>()
-    private var _binding: FragmentCoinListBinding? = null
-
-    private val binding get() = _binding!!
-
-    private var navController: NavController? = null
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        _binding = FragmentCoinListBinding.inflate(inflater, container, false)
-        return binding.root
-
-    }
+    override val layoutId: Int = R.layout.fragment_coin_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(requireView())
 
         searchCoin()
 
@@ -75,13 +52,8 @@ class CoinListFragment : BaseFragment(), OnClickListener {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onClick(id: String) {
-        findNavController().navigate(R.id.action_coinListFragment_to_coinDetailFragment, Bundle().apply {
+        navigate(R.id.action_coinListFragment_to_coinDetailFragment, Bundle().apply {
             putString(CoinDetailFragment.COIN_ID, id)
         })
     }
