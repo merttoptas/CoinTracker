@@ -108,6 +108,10 @@ dependencies {
     //Data Store
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    //Charts
+    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT'
+
 }
 
 // Allow references to generated code

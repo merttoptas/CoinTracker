@@ -50,6 +50,7 @@ class MyFavoriteViewModel @Inject constructor(
                     }
                     setState { currentState.copy(coinList = coinList, isLoading = false) }
                 }
+                setState { currentState.copy(isLoading = false) }
             }.addOnFailureListener {
                 setEffect(MyFavoriteViewEffect.Failed(it.message))
                 setState { currentState.copy(isLoading = false) }

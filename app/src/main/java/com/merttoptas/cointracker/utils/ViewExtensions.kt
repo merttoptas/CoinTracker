@@ -1,5 +1,6 @@
 package com.merttoptas.cointracker.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -9,28 +10,7 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.merttoptas.cointracker.R
-import java.text.DecimalFormat
-
-fun View.show(): View {
-    if (visibility != View.VISIBLE) {
-        visibility = View.VISIBLE
-    }
-    return this
-}
-
-fun View.hide(): View {
-    if (visibility != View.INVISIBLE) {
-        visibility = View.INVISIBLE
-    }
-    return this
-}
-
-fun View.remove(): View {
-    if (visibility != View.GONE) {
-        visibility = View.GONE
-    }
-    return this
-}
+import kotlin.math.floor
 
 fun Fragment.hideKeyboard(targetView: View) {
     activity?.let {
@@ -38,7 +18,6 @@ fun Fragment.hideKeyboard(targetView: View) {
         imm.hideSoftInputFromWindow(targetView.windowToken, 0)
     }
 }
-
 
 @BindingAdapter("app:loadUrlImage")
 fun ImageView.loadUrlImage(url: String?) {
@@ -48,14 +27,16 @@ fun ImageView.loadUrlImage(url: String?) {
 @BindingAdapter("doubleToString")
 fun doubleToString(textView: TextView, value: Double?) {
     value?.let {
-        textView.text = it.toString()
+        textView.text = "$ $it"
     }
 }
 
+@SuppressLint("SetTextI18n")
 @BindingAdapter("percentToString")
 fun percentToString(textView: TextView, value: Double?) {
-    val formatter = DecimalFormat("%0.00")
-    textView.text = formatter.format(value)
+    value?.let {
+        textView.text = "% ${floor(value * 100) / 100}"
+    }
     if (value.toString().contains("-")) {
         textView.setTextColor(textView.context.resources.getColor(R.color.red))
     } else {

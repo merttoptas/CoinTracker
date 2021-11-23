@@ -1,9 +1,10 @@
 package com.merttoptas.cointracker.features.coindetail.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.merttoptas.cointracker.data.model.CoinDetailResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
+import com.merttoptas.cointracker.data.model.TimeInterval
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.data.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
@@ -13,6 +14,7 @@ import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,19 +58,30 @@ class CoinDetailViewModel @Inject constructor(
                         }
                     }
                 }
+
+                getCoinHistory()
             }
         }
     }
 
+    fun timeIntervalChange(value: TimeInterval?) {
+        setState { currentState.copy(interval = value) }
+    }
+
+    fun refreshIntervalChange(value: Int) {
+        setState { currentState.copy(refreshInterval = value) }
+    }
+
     fun updateFavoriteCoin() {
-        val data = HashMap<String, String>()
+        val data = HashMap<String, Any>()
 
         data["id"] = currentState.coinId.toString()
         data["name"] = currentState.coinDetail?.name ?: ""
         data["symbol"] = currentState.coinDetail?.symbol ?: ""
         data["image"] = currentState.coinDetail?.image?.imageLarge ?: ""
         data["currentPrice"] = currentState.coinDetail?.marketData?.current_price?.usd.toString()
-        data["changePercent"] = currentState.coinDetail?.marketData?.priceChancePercentage_24h.toString()
+        data["changePercent"] =
+            currentState.coinDetail?.marketData?.priceChancePercentage_24h.toString()
 
         setState { currentState.copy(coin = data) }
 
@@ -136,7 +149,6 @@ class CoinDetailViewModel @Inject constructor(
                         )
                         coinList.add(coin)
                     }
-                    Log.d("deneme1", "forEach" + coinList.toString())
                     setState { currentState.copy(favoriteCoins = coinList) }
                 }
                 updateImageStatus()
@@ -151,18 +163,126 @@ class CoinDetailViewModel @Inject constructor(
         getFavoriteCoins()
     }
 
+    private fun getCoinHistory() {
+        coroutineScope.launch {
+            currentState.coinId?.let {
+                coinRepository.getCoinHistory(it, days = currentState.interval?.title ?: "1")
+                    .collect {
+                        when (it) {
+                            is DataState.Success -> {
+                                setState {
+                                    currentState.copy(
+                                        coinHistory = it.data.prices
+                                    )
+                                }
+                            }
+                            is DataState.Error -> {
+                                setState {
+                                    currentState.copy(
+                                        errorMessage = it.apiError?.message,
+                                        isLoading = false
+                                    )
+                                }
+                            }
+                            is DataState.Loading -> {
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    fun setRefreshInterval() {
+        viewModelScope.launch {
+            currentState.refreshInterval?.let {
+                while (true) {
+                    coinRepository.getCoinDetail(currentState.coinId ?: "").collect {
+                        when (it) {
+                            is DataState.Success -> {
+                                setState {
+                                    currentState.copy(
+                                        coinDetail = it.data,
+                                        isLoading = false,
+                                    )
+                                }
+                                getCoinHistory()
+                            }
+                            is DataState.Error -> {
+                                setState {
+                                    currentState.copy(
+                                        errorMessage = it.apiError?.message,
+                                        isLoading = false
+                                    )
+                                }
+                            }
+                            is DataState.Loading -> {
+                                setState { currentState.copy(isLoading = true) }
+                            }
+                        }
+                    }
+
+                    if (currentState.isFavorite == true) {
+                        firebaseService.updateFavorite(
+                            firebaseService.getUid() ?: "",
+                            prepareRefreshUpdateFavoriteCoin()
+                        )
+                    }
+
+                    val refreshInterval = it * 60000
+                    delay(refreshInterval.toLong())
+                }
+            }
+        }
+    }
+
+    fun prepareRefreshUpdateFavoriteCoin(): HashMap<String, Any> {
+        val data = HashMap<String, Any>()
+
+        data["id"] = currentState.coinId.toString()
+        data["name"] = currentState.coinDetail?.name ?: ""
+        data["symbol"] = currentState.coinDetail?.symbol ?: ""
+        data["image"] = currentState.coinDetail?.image?.imageLarge ?: ""
+        data["currentPrice"] = currentState.coinDetail?.marketData?.current_price?.usd.toString()
+        data["changePercent"] =
+            currentState.coinDetail?.marketData?.priceChancePercentage_24h.toString()
+        return data
+    }
+
+    fun updateTimeInterval() {
+        getCoinHistory()
+        with(currentState) {
+            val tempTime = timeInterval
+            tempTime.forEach {
+                it.isSelected = it.title == interval?.title
+            }
+            setState { currentState.copy(timeInterval = tempTime) }
+        }
+    }
+
+
     override fun createInitialState() = CoinDetailViewState()
 }
 
 data class CoinDetailViewState(
     val isFavorite: Boolean? = null,
     val coinId: String? = null,
-    val coin: HashMap<String, String> = hashMapOf(),
+    val interval: TimeInterval? = null,
+    val refreshInterval: Int? = null,
+    val coinHistory: List<DoubleArray> = listOf(doubleArrayOf()),
+    val coin: HashMap<String, Any> = hashMapOf(),
+    val timeInterval: List<TimeInterval> = timeIntervalList,
     val favoriteCoins: ArrayList<CoinResponse>? = null,
     val coinDetail: CoinDetailResponse? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) : IViewState
+
+val timeIntervalList = listOf(
+    TimeInterval("1", "Daily Price Change", true),
+    TimeInterval("14", "14-Day price Change", false),
+    TimeInterval("30", "Monthly Price Change", false),
+    TimeInterval("max", "Max Price Change", false),
+)
 
 sealed class CoinDetailViewEffect : IViewEffect {
     class StatusFavorite(val status: Boolean, val errorMessage: String?) : CoinDetailViewEffect()

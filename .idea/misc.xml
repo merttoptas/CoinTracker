@@ -5,10 +5,14 @@
       <map>
         <entry key="../../Library/Android/sdk/caches/transforms-3/ad3c37df6a0eb93ca881aabf3396bb16/transformed/material-1.4.0/res/layout/design_layout_snackbar_include.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/drawable/background_edittext_rounded.xml" value="0.3712820512820513" />
+        <entry key="app/src/main/res/drawable/background_time_interval.xml" value="0.3984615384615385" />
+        <entry key="app/src/main/res/drawable/background_time_interval_selected.xml" value="0.3984615384615385" />
         <entry key="app/src/main/res/drawable/button_background.xml" value="0.3398148148148148" />
         <entry key="app/src/main/res/drawable/custum_layout_snackbar_include.xml" value="0.13" />
         <entry key="app/src/main/res/drawable/ic_arrow_downward.xml" value="0.3984615384615385" />
         <entry key="app/src/main/res/drawable/ic_arrrow_upward.xml" value="0.3984615384615385" />
+        <entry key="app/src/main/res/drawable/ic_back_blue_black.xml" value="0.3984615384615385" />
+        <entry key="app/src/main/res/drawable/ic_baseline_check_circle_24.xml" value="0.3984615384615385" />
         <entry key="app/src/main/res/drawable/ic_baseline_lock_24.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/drawable/ic_bitcoin_logo.xml" value="0.3490740740740741" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.3712820512820513" />
@@ -28,6 +32,7 @@
         <entry key="app/src/main/res/layout/layout_coin_loading_progress.xml" value="0.296195652173913" />
         <entry key="app/src/main/res/layout/layout_custom_snackbar_include.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/layout/layout_my_favorite_list_item.xml" value="0.3609375" />
+        <entry key="app/src/main/res/layout/layout_time_interval_item.xml" value="0.67" />
         <entry key="app/src/main/res/layout/register_fragment.xml" value="0.33" />
         <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.3609375" />
       </map>

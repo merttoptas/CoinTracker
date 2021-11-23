@@ -2,6 +2,7 @@ package com.merttoptas.cointracker.data.remote.api
 
 import com.merttoptas.cointracker.data.model.ApiStatusResponse
 import com.merttoptas.cointracker.data.model.CoinDetailResponse
+import com.merttoptas.cointracker.data.model.CoinHistoryResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.utils.Constants
 import retrofit2.Response
@@ -24,4 +25,11 @@ interface CoinService {
     suspend fun getCoinDetail(
         @Path("id") coinsId: String
     ): Response<CoinDetailResponse>
+
+    @GET(Constants.COIN_HISTORY)
+    suspend fun getCoinHistory(
+        @Path("id") id: String,
+        @Query("days") days: String,
+        @Query("vs_currency") includePlatform: String = "usd"
+    ): Response<CoinHistoryResponse>
 }

@@ -9,6 +9,7 @@ class Constants {
         const val CHECK_API_STATUS = "ping"
         const val COIN_LIST = "coins/markets"
         const val COIN_DETAIL = "coins/{id}"
+        const val COIN_HISTORY = "coins/{id}/market_chart"
         const val VS_CURRENCY = "vs_currency"
         const val PRICE_CHANGE_PERCENTAGE = "price_change_percentage"
     }

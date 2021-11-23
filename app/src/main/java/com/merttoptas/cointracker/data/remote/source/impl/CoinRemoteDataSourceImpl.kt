@@ -2,6 +2,7 @@ package com.merttoptas.cointracker.data.remote.source.impl
 
 import com.merttoptas.cointracker.data.model.ApiStatusResponse
 import com.merttoptas.cointracker.data.model.CoinDetailResponse
+import com.merttoptas.cointracker.data.model.CoinHistoryResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.remote.api.CoinService
 import com.merttoptas.cointracker.data.remote.source.CoinRemoteDataSource
@@ -21,4 +22,9 @@ class CoinRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getCoinDetail(coinsId: String): Flow<DataState<CoinDetailResponse>> =
         getResult { coinService.getCoinDetail(coinsId) }
+
+    override suspend fun getCoinHistory(
+        id: String,
+        days: String
+    ): Flow<DataState<CoinHistoryResponse>>  = getResult { coinService.getCoinHistory(id, days) }
 }

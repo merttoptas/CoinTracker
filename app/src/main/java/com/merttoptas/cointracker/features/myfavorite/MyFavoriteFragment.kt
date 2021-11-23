@@ -48,7 +48,6 @@ class MyFavoriteFragment : BaseFragment<FragmentMyFavoriteBinding>(), OnClickLis
                                     safeMessage,
                                     SnackBarEnum.ERROR
                                 ).show()
-
                             }
                         }
                     }

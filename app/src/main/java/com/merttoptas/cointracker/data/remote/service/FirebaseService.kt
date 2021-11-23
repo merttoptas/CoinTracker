@@ -22,13 +22,13 @@ class FirebaseService @Inject constructor(
 
     fun insertFavoriteCoins(
         userId: String,
-        coin: HashMap<String, String>
+        coin: HashMap<String, Any>
     ): Pair<Boolean, String?>? {
         var data: Pair<Boolean, String>? = null
 
         firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
             .let { collectionReference ->
-                collectionReference.document(coin["id"] ?: "")
+                collectionReference.document(coin["id"].toString())
                     .set(coin, SetOptions.merge())
                     .addOnSuccessListener { data = Pair(true, "") }
                     .addOnFailureListener { data = Pair(false, it.message.toString()) }
@@ -37,12 +37,12 @@ class FirebaseService @Inject constructor(
         return data
     }
 
-    fun deleteFavoriteCoin(userId: String, coin: HashMap<String, String>): Pair<Boolean, String?>? {
+    fun deleteFavoriteCoin(userId: String, coin: HashMap<String, Any>): Pair<Boolean, String?>? {
         var data: Pair<Boolean, String>? = null
 
         firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
             .let { collectionReference ->
-                collectionReference.document(coin["id"] ?: "")
+                collectionReference.document(coin["id"].toString())
                     .delete()
                     .addOnSuccessListener { data = Pair(true, "") }
                     .addOnFailureListener { data = Pair(false, it.message.toString()) }
@@ -53,6 +53,18 @@ class FirebaseService @Inject constructor(
 
     fun getFavoriteCoins(userId: String): CollectionReference {
         return firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
+    }
+
+    fun updateFavorite(userId: String, coin: HashMap<String, Any>): Pair<Boolean, String?>? {
+        var data: Pair<Boolean, String>? = null
+
+        firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
+            .let { collectionReference ->
+                collectionReference.document(coin["id"].toString())
+                    .update(coin).addOnSuccessListener { data = Pair(true, "") }
+                    .addOnFailureListener { data = Pair(false, it.message.toString()) }
+            }
+        return data
     }
 
     fun getUid(): String? = firebaseAuth.uid

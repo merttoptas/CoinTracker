@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="com.merttoptas.cointracker.features.coindetail.adapter.OnClickListener" />
+
+        <variable
+            name="dataHolder"
+            type="com.merttoptas.cointracker.data.model.TimeInterval" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginHorizontal="10dp"
+        android:onClick="@{() -> listener.onChanged(dataHolder)}"
+        app:cardCornerRadius="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:background="@{dataHolder.isSelected ? @drawable/background_time_interval_selected : @drawable/background_time_interval}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center_horizontal|center_vertical"
+                android:includeFontPadding="false"
+                android:paddingHorizontal="14dp"
+                android:text="@{dataHolder.title}"
+                android:textColor="@{dataHolder.isSelected ? @color/white : @color/mainly_blue}"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1h" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
