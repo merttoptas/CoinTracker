@@ -56,7 +56,7 @@ MVVM (Model-View-ViewModel) architecture pattern and data binding is used in the
   - The users can view all coins information; such as name, symbol, current price, price change percentage, etc.
   - The users can view selected coin details Hash algorithm information, explanation, time interval change with a graphical table. On the detail page, the users can add or remove the coin to their favorites.
   - The users can search by coin name and symbol by coin id on the home page.
-  - When the application and coin detail page is opened, the users favorite coin information is updated.
+  - When the application and coin detail page is opened, the user's favorite coin information is updated.
   - The users can update the information of the coin viewed between certain minutes.
  
 
