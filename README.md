@@ -25,7 +25,7 @@
   <!-- ABOUT THE PROJECT -->
 ## About The Project
   
-Coin Tracker is a cryptocurrency tracking application. CoinGecko crypto API was used to get the latest prices and histories for coins. You can subscribe to the application using the Firebase E-mail service and view the coin list. You can create your own coin favorite list
+Coin Tracker is a cryptocurrency tracking application. CoinGecko crypto API was used to get the latest prices and histories for coins. You can subscribe to the application using the Firebase E-mail service and view the coin list. You can create your own coin favorite list.
   
 ## Architecture
 MVVM (Model-View-ViewModel) architecture pattern and data binding is used in the development of this application. The development language of the application is Kotlin.
@@ -52,16 +52,17 @@ MVVM (Model-View-ViewModel) architecture pattern and data binding is used in the
     * [Lottie](https://github.com/airbnb/lottie-android)
   
 ## Features
-  - User can sign up by e-mail. You can save your own coins.
-  - The user can view all coins information; such as name, symbol, current price, price change percentage etc.
-  - User can view selected coin details Hash algorithm information, explanation, time interval change with graphical table. On the detail page, he can add or remove the coin to his favourites.
+  - Users can sign up by e-mail. You can save your own coins.
+  - The user can view all coins information; such as name, symbol, current price, price change percentage 24h, etc.
+  - Users can view selected coin details Hash algorithm information, explanation, time interval change with a graphical table. On the detail page, the users can add or remove the coin to their favorites.
   - The user can search by coin name and symbol by coin id on the home page.
-  - Every time the coin list is opened and the coin detail page is opened, the coins in the user's favorites are updated.
-  - The user can update the information of the coin viewed between certain minutes
+  - When the application and coin detail page is opened, the user's favorite coin information is updated.
+  - The user can update the information of the coin viewed between certain minutes.
  
 
 ## Requirements
-  
+  - First, make sure you have Android Arctic Fox 3.1 version installed
+  - Android Studio's Gradle JDK version should be Java 11.0.10.
   
 --
 <!-- CONTACT -->
