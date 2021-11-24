@@ -1,20 +1,31 @@
 <resources>
     <string name="app_name">Coin Tracker</string>
-    <!-- Splash-->
+    <!-- Splash Page-->
     <string name="coin_tracker_title">Coin Tracker</string>
     <string name="internet_connection_failed_text">Please check your internet connection.</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <!-- Login Page -->
+    <string name="login_email">E-mail</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign_btn">Login</string>
+    <string name="register_btn">Register</string>
+    <string name="register_confirm_password">Confirm Password</string>
+
+    <!-- Coin List Page -->
+    <string name="coin_list_app_bar">Coin List</string>
+    <string name="coin_list_search_hint_text">Search coin by name or symbol</string>
+
+
+    <string name="my_favorite_app_bar">My Favorite Coins</string>
+    <string name="bottom_bar_favorite">Favorite</string>
+
+    <!-- Coin Detail Page -->
+    <string name="coin_detail_description">Description</string>
     <string name="login_failed">"Login failed"</string>
     <string name="warning_enter_email">Please enter your email</string>
     <string name="warning_enter_password">Please enter your password</string>
-    <string name="login_register_text_title">Don’t have an account?<b><u>Register now</u></b></string>
-
+    <string name="login_register_text_title">Don’t have an account? <b><u>Register now</u></b></string>
+    <string name="coin_detail_hash_algorithm">Hash Algorithm</string>
+    <string name="coin_detail_refresh_data">Refresh Data</string>
+    <string name="coin_detail_refresh_coin_interval">Refresh Coin Interval</string>
 </resources>

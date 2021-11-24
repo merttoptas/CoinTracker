@@ -51,13 +51,6 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                 viewModel.viewEffect.collect {
                     when (it) {
                         is CoinDetailViewEffect.Failed -> {
-                            SnackBarBuilder(
-                                this@CoinDetailFragment,
-                                it.errorMessage.toString(),
-                                SnackBarEnum.ERROR
-                            ).show()
-                        }
-                        is CoinDetailViewEffect.StatusFavorite -> {
                             if (it.status.not()) {
                                 SnackBarBuilder(
                                     this@CoinDetailFragment,
@@ -84,7 +77,7 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
 
     private fun setCharts(coinList: List<DoubleArray>) {
         val viewState = viewModel.currentState
-        binding.aaChartView.aa_drawChartWithChartModel(
+        binding.chartView.aa_drawChartWithChartModel(
             Utils.getChartModel(
                 viewState.coinDetail?.name ?: "",
                 viewState.interval?.info ?: "Daily Price Change",
@@ -95,7 +88,5 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
 
     override fun onChanged(timeInterval: TimeInterval) {
         viewModel.timeIntervalChange(timeInterval)
-        viewModel.updateTimeInterval()
-
     }
 }

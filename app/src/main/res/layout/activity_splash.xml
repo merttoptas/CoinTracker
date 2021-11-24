@@ -4,12 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#325288"
-        tools:context=".features.splash.SplashActivity"
-        tools:layout_editor_absoluteX="1dp">
-
+        android:background="@color/mainly_blue"
+        tools:context=".features.splash.SplashActivity">
 
         <ImageView
             android:id="@+id/ivCoinLogo"
@@ -18,7 +16,6 @@
             android:src="@drawable/ic_bitcoin_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,18 +23,16 @@
             android:id="@+id/tvBitcoin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/margin_normal"
             android:fontFamily="sans-serif-smallcaps"
             android:letterSpacing="0.3"
             android:text="@string/coin_tracker_title"
-            android:textColor="#F4EEE8"
-            android:textSize="36sp"
+            android:textColor="@color/very_light_brown"
+            android:textSize="@dimen/splash_size"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivCoinLogo">
 
         </TextView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

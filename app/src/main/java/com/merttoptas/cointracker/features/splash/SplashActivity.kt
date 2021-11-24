@@ -50,6 +50,11 @@ class SplashActivity : AppCompatActivity() {
                 getString(R.string.internet_connection_failed_text),
                 SnackBarEnum.ERROR
             ).show()
+
+            lifecycleScope.launch {
+                delay(3000)
+                finishAffinity()
+            }
         }
     }
 

@@ -66,6 +66,7 @@ class CoinDetailViewModel @Inject constructor(
 
     fun timeIntervalChange(value: TimeInterval?) {
         setState { currentState.copy(interval = value) }
+        updateTimeInterval()
     }
 
     fun refreshIntervalChange(value: Int) {
@@ -73,18 +74,7 @@ class CoinDetailViewModel @Inject constructor(
     }
 
     fun updateFavoriteCoin() {
-        val data = HashMap<String, Any>()
-
-        data["id"] = currentState.coinId.toString()
-        data["name"] = currentState.coinDetail?.name ?: ""
-        data["symbol"] = currentState.coinDetail?.symbol ?: ""
-        data["image"] = currentState.coinDetail?.image?.imageLarge ?: ""
-        data["currentPrice"] = currentState.coinDetail?.marketData?.current_price?.usd.toString()
-        data["changePercent"] =
-            currentState.coinDetail?.marketData?.priceChancePercentage_24h.toString()
-
-        setState { currentState.copy(coin = data) }
-
+        setState { currentState.copy(coin = prepareRefreshUpdateFavoriteCoin()) }
         currentState.favoriteCoins?.find { coinResponse -> coinResponse.coinId == currentState.coinId }
             ?.let {
                 firebaseService.deleteFavoriteCoin(
@@ -92,7 +82,7 @@ class CoinDetailViewModel @Inject constructor(
                     currentState.coin
                 )?.let {
                     setEffect(
-                        CoinDetailViewEffect.StatusFavorite(
+                        CoinDetailViewEffect.Failed(
                             status = it.first,
                             errorMessage = it.second
                         )
@@ -106,12 +96,7 @@ class CoinDetailViewModel @Inject constructor(
                 firebaseService.getUid() ?: "",
                 coin = currentState.coin
             )?.let {
-                setEffect(
-                    CoinDetailViewEffect.StatusFavorite(
-                        status = it.first,
-                        errorMessage = it.second
-                    )
-                )
+                setState { currentState.copy(isFavorite = true) }
             }
             prepareFavoriteList()
         }
@@ -120,6 +105,10 @@ class CoinDetailViewModel @Inject constructor(
     private fun updateImageStatus() {
         currentState.favoriteCoins?.find { coinResponse -> coinResponse.coinId == currentState.coinId }
             ?.let {
+                firebaseService.updateFavorite(
+                    firebaseService.getUid() ?: "",
+                    prepareRefreshUpdateFavoriteCoin()
+                )
                 setState { currentState.copy(isFavorite = true) }
             } ?: kotlin.run {
             setState { currentState.copy(isFavorite = false) }
@@ -153,7 +142,7 @@ class CoinDetailViewModel @Inject constructor(
                 }
                 updateImageStatus()
             }.addOnFailureListener {
-                setEffect(CoinDetailViewEffect.Failed(it.message))
+                setEffect(CoinDetailViewEffect.Failed(true, it.message))
             }
         }
     }
@@ -235,7 +224,7 @@ class CoinDetailViewModel @Inject constructor(
         }
     }
 
-    fun prepareRefreshUpdateFavoriteCoin(): HashMap<String, Any> {
+    private fun prepareRefreshUpdateFavoriteCoin(): HashMap<String, Any> {
         val data = HashMap<String, Any>()
 
         data["id"] = currentState.coinId.toString()
@@ -248,7 +237,7 @@ class CoinDetailViewModel @Inject constructor(
         return data
     }
 
-    fun updateTimeInterval() {
+    private fun updateTimeInterval() {
         getCoinHistory()
         with(currentState) {
             val tempTime = timeInterval
@@ -258,7 +247,6 @@ class CoinDetailViewModel @Inject constructor(
             setState { currentState.copy(timeInterval = tempTime) }
         }
     }
-
 
     override fun createInitialState() = CoinDetailViewState()
 }
@@ -285,6 +273,5 @@ val timeIntervalList = listOf(
 )
 
 sealed class CoinDetailViewEffect : IViewEffect {
-    class StatusFavorite(val status: Boolean, val errorMessage: String?) : CoinDetailViewEffect()
-    class Failed(val errorMessage: String?) : CoinDetailViewEffect()
+    class Failed(val status: Boolean, val errorMessage: String?) : CoinDetailViewEffect()
 }

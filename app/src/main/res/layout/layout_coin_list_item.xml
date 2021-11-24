@@ -18,13 +18,13 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/margin_medium"
         android:foreground="?android:attr/selectableItemBackground"
         android:onClick="@{() -> listener.onClick(dataHolder.coinId)}"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
-        app:contentPadding="10dp">
+        app:contentPadding="@dimen/margin_medium">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/coinsItemMainLayout"
@@ -44,7 +44,7 @@
                 android:id="@+id/coinsItemNameTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_start_margin"
+                android:layout_marginStart="@dimen/margin_normal"
                 android:ellipsize="end"
                 android:gravity="start"
                 android:text="@{dataHolder.name}"
@@ -58,7 +58,7 @@
                 android:id="@+id/coinsItemSymbolTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_tiny"
                 android:text="@{dataHolder.symbol}"
                 android:textColor="@color/subtitle_text_color"
                 app:layout_constraintStart_toStartOf="@id/coinsItemNameTextView"
@@ -68,7 +68,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_tiny"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="@id/coinsItemNameTextView"
@@ -78,10 +78,9 @@
                     android:id="@+id/coinsItemPriceTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/coin_list_item_text_size"
                     app:doubleToString="@{dataHolder.currentPrice}"
                     tools:text="99879.45" />
 
@@ -90,17 +89,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="5dp"
-                    android:textSize="13sp"
+                    android:layout_marginStart="@dimen/margin_tiny"
+                    android:textSize="@dimen/coin_list_item_text_size"
                     app:percentToString="@{dataHolder.changePercent}"
                     tools:text="+123.45"
                     tools:textColor="@color/dark_green" />
 
                 <ImageView
                     android:id="@+id/percentStatusIV"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_width="@dimen/margin_normal"
+                    android:layout_height="@dimen/margin_normal"
+                    android:layout_marginStart="@dimen/margin_tiny"
                     android:gravity="center"
                     app:percentStatusIV="@{dataHolder.changePercent}"
                     tools:src="@drawable/ic_arrow_downward" />

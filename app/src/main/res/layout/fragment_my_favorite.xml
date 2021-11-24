@@ -25,7 +25,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 android:elevation="5dp"
-                app:title="My Favorite Coins"
+                app:title="@string/my_favorite_app_bar"
                 app:titleCentered="true"
                 app:titleTextColor="@color/black" />
 
@@ -35,7 +35,7 @@
             android:id="@+id/rvFavoriteList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/margin_medium"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

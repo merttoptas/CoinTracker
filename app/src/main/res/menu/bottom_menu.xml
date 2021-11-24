@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/coinListFragment"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title="Coin List" />
+        android:icon="@drawable/ic_baseline_home"
+        android:title="@string/coin_list_app_bar" />
     <item
         android:id="@id/myFavoriteFragment"
         android:icon="@drawable/ic_favorite_black"
-        android:title="Favorite" />
+        android:title="@string/bottom_bar_favorite" />
 </menu>

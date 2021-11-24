@@ -24,7 +24,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 android:elevation="5dp"
-                app:title="Coin List"
+                app:title="@string/coin_list_app_bar"
                 app:titleCentered="true"
                 app:titleTextColor="@color/black" />
 
@@ -34,21 +34,21 @@
             android:id="@+id/coinSearchView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/default_margin"
             android:background="@drawable/background_edittext_rounded"
             app:iconifiedByDefault="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-            app:queryHint="Search coin by name or symbol" />
+            app:queryHint="@string/coin_list_search_hint_text" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCoinList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/margin_medium"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

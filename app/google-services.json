@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "73748449624",
+    "project_id": "coin-tracker-c6c13",
+    "storage_bucket": "coin-tracker-c6c13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73748449624:android:f12a8de9dc7c60401cbd2d",
+        "android_client_info": {
+          "package_name": "com.merttoptas.cointracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "73748449624-m3cfshhl7gm50la4a7sdgs17clrkv40n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDtoJqoD8Hm5FULq1sD2gQmqhFgjQEwts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "73748449624-m3cfshhl7gm50la4a7sdgs17clrkv40n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
