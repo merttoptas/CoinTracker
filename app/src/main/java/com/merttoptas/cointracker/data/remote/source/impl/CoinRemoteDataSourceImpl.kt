@@ -6,7 +6,7 @@ import com.merttoptas.cointracker.data.model.CoinHistoryResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.remote.api.CoinService
 import com.merttoptas.cointracker.data.remote.source.CoinRemoteDataSource
-import com.merttoptas.cointracker.utils.DataState
+import com.merttoptas.cointracker.domain.datastate.DataState
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -60,32 +60,24 @@ class SplashActivity : AppCompatActivity() {
 
     private fun resumeApp() {
         lifecycleScope.launchWhenResumed {
-            viewModel.viewEffect.collect {
-                when (it) {
-                    is SplashViewEffect.DirectToLoginAndRegister -> {
-                        startLoginAndRegisterActivity()
-                    }
-
-                    is SplashViewEffect.DirectToCoinList -> {
-                        startMainActivity()
-                    }
+            viewModel.uiState.collect { viewState ->
+                if (viewState.isCheckUserLogin == true) {
+                    startMainActivity(false)
+                } else if (viewState.isCheckUserLogin == false) {
+                    startMainActivity(true)
                 }
             }
         }
     }
 
-    private fun startLoginAndRegisterActivity() {
+    private fun startMainActivity(isDirectToLogin: Boolean) {
         lifecycleScope.launch {
             delay(2000)
-            NavigationHelper.startLoginAndRegisterActivity(applicationContext)
-            finish()
-        }
-    }
-
-    private fun startMainActivity() {
-        lifecycleScope.launch {
-            delay(2000)
-            NavigationHelper.startMainActivity(this@SplashActivity, applicationContext)
+            NavigationHelper.startMainActivity(
+                this@SplashActivity,
+                applicationContext,
+                isDirectToLogin
+            )
             finish()
         }
     }

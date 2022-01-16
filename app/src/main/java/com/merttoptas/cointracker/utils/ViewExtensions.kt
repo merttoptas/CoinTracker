@@ -24,7 +24,7 @@ fun ImageView.loadUrlImage(url: String?) {
     Glide.with(this).load(url).into(this)
 }
 
-@BindingAdapter("doubleToString")
+@BindingAdapter("app:doubleToString")
 fun doubleToString(textView: TextView, value: Double?) {
     value?.let {
         textView.text = "$ $it"
@@ -32,7 +32,7 @@ fun doubleToString(textView: TextView, value: Double?) {
 }
 
 @SuppressLint("SetTextI18n")
-@BindingAdapter("percentToString")
+@BindingAdapter("app:percentToString")
 fun percentToString(textView: TextView, value: Double?) {
     value?.let {
         textView.text = "% ${floor(value * 100) / 100}"
@@ -44,7 +44,7 @@ fun percentToString(textView: TextView, value: Double?) {
     }
 }
 
-@BindingAdapter("percentStatusIV")
+@BindingAdapter("app:percentStatusIV")
 fun percentStatusIV(imageView: ImageView, value: Double?) {
     if (value.toString().contains("-")) {
         imageView.setBackgroundResource(R.drawable.ic_arrow_downward)

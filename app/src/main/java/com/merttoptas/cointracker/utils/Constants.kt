@@ -4,6 +4,9 @@ class Constants {
     companion object {
         // Url
         const val BASE_URL = "https://api.coingecko.com/api/v3/"
+        const val COIN_DATABASE = "CoinDatabase"
+        const val KEY_DATA_STORE_SETTINGS = "settings"
+        const val KEY_USER_TOKEN = "user_token"
 
         //Api Endpoint
         const val CHECK_API_STATUS = "ping"

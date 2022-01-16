@@ -5,12 +5,12 @@ import com.merttoptas.cointracker.data.local.database.toCoinResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.model.toCoinListEntity
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
-import com.merttoptas.cointracker.data.repository.CoinDatabaseRepository
-import com.merttoptas.cointracker.data.repository.CoinRepository
+import com.merttoptas.cointracker.domain.repository.CoinDatabaseRepository
+import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
-import com.merttoptas.cointracker.features.base.IViewState
-import com.merttoptas.cointracker.utils.DataState
+import com.merttoptas.cointracker.domain.datastate.DataState
+import com.merttoptas.cointracker.domain.viewstate.base.IViewState
 import com.merttoptas.cointracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.MainScope
@@ -24,19 +24,18 @@ class CoinListViewModel @Inject constructor(
     private val firebaseService: FirebaseService,
     private val coinDao: CoinDatabaseRepository
 ) :
-    BaseViewModel<CoinListViewState, CoinListViewEffect>() {
+    BaseViewModel<CoinListViewState, IViewEffect>() {
 
     private val coroutineScope = MainScope()
 
     init {
         coroutineScope.launch {
-            setState { currentState.copy(isLoading = true) }
             coinRepository.getCoinList().collect {
                 when (it) {
                     is DataState.Success -> {
                         setState { currentState.copy(coinList = it.data, isLoading = false) }
                         insertCoinListDataBase(it.data)
-                        getFavoriteCoins()
+                            getFavoriteCoins()
                     }
                     is DataState.Error -> {
                         setState {
@@ -148,8 +147,3 @@ data class CoinListViewState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) : IViewState
-
-sealed class CoinListViewEffect : IViewEffect {
-    object SuccessfullyLogin : CoinListViewEffect()
-    class FailedLogin(val errorMessage: String?) : CoinListViewEffect()
-}

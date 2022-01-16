@@ -4,7 +4,7 @@ import com.merttoptas.cointracker.data.model.ApiStatusResponse
 import com.merttoptas.cointracker.data.model.CoinDetailResponse
 import com.merttoptas.cointracker.data.model.CoinHistoryResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
-import com.merttoptas.cointracker.utils.DataState
+import com.merttoptas.cointracker.domain.datastate.DataState
 import kotlinx.coroutines.flow.Flow
 
 interface CoinRemoteDataSource {

@@ -6,13 +6,11 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.data.local.DataStoreManager
+import com.merttoptas.cointracker.domain.viewstate.base.IViewState
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.base.IViewEffect
-import com.merttoptas.cointracker.features.base.IViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

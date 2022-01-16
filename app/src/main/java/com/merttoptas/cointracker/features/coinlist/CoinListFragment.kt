@@ -11,7 +11,6 @@ import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.features.coinlist.adapter.CoinListAdapter
 import com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener
-import com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewEffect
 import com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -31,21 +30,10 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
         lifecycleScope.launchWhenResumed {
             launch {
                 loginViewModel.viewState.collect {
-                    if (it.isLoading) showProgress() else hideProgress()
+                  if (it.isLoading) showProgress() else hideProgress()
 
                     binding.rvCoinList.adapter = CoinListAdapter(this@CoinListFragment).apply {
                         submitList(it.coinList)
-                    }
-                }
-            }
-
-            launch {
-                loginViewModel.viewEffect.collect { effect ->
-                    when (effect) {
-                        is CoinListViewEffect.SuccessfullyLogin -> {
-                        }
-                        is CoinListViewEffect.FailedLogin -> {
-                        }
                     }
                 }
             }

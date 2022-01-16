@@ -1,4 +1,4 @@
-package com.merttoptas.cointracker.utils
+package com.merttoptas.cointracker.domain.datastate
 
 import com.merttoptas.cointracker.data.model.APIError
 

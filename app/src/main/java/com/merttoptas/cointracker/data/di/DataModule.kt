@@ -4,8 +4,8 @@ import com.merttoptas.cointracker.data.local.database.CoinDao
 import com.merttoptas.cointracker.data.remote.api.CoinService
 import com.merttoptas.cointracker.data.remote.source.CoinRemoteDataSource
 import com.merttoptas.cointracker.data.remote.source.impl.CoinRemoteDataSourceImpl
-import com.merttoptas.cointracker.data.repository.CoinDatabaseRepository
-import com.merttoptas.cointracker.data.repository.CoinRepository
+import com.merttoptas.cointracker.domain.repository.CoinDatabaseRepository
+import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.data.repository.impl.CoinRepositoryImpl
 import dagger.Module
 import dagger.Provides

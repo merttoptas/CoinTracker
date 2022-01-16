@@ -5,8 +5,8 @@ import com.merttoptas.cointracker.data.model.CoinDetailResponse
 import com.merttoptas.cointracker.data.model.CoinHistoryResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.remote.source.CoinRemoteDataSource
-import com.merttoptas.cointracker.data.repository.CoinRepository
-import com.merttoptas.cointracker.utils.DataState
+import com.merttoptas.cointracker.domain.repository.CoinRepository
+import com.merttoptas.cointracker.domain.datastate.DataState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

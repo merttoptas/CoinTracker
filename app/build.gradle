@@ -5,6 +5,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
     id 'com.google.gms.google-services'
+    id 'jacoco'
 }
 
 android {
@@ -112,9 +113,50 @@ dependencies {
     //Charts
     implementation 'com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT'
 
+    // Test
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1'
+    testImplementation "com.google.truth:truth:1.1.3"
+
+    //turbine
+    testImplementation 'app.cash.turbine:turbine:0.6.0'
+
 }
 
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+}
+
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testBetaUnitTest', 'createBetaCoverageReport']) {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*_MembersInjector.class',
+                      '**/Dagger*Component.class',
+                      '**/Dagger*Component$Builder.class',
+                      '**/*Module_*Factory.class']
+
+    //java compiled classes
+    def javaTree = fileTree(dir: "$project.buildDir/intermediates/javac/beta", excludes: fileFilter)
+    //kotlin compiled classes
+    def kotlinTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/beta", excludes: fileFilter)
+
+    def mainSrc = "$project.projectDir/src/main/java"
+
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.from = files([javaTree, kotlinTree])
+    executionData.setFrom(fileTree(dir: project.buildDir, includes: [
+            'jacoco/testBetaUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ]))
+}
+
+task getCoverage(type: Exec, dependsOn: 'jacocoTestReport') {
+    group = "Reporting"
+    commandLine "open", "$buildDir/reports/jacoco/jacocoTestReport/html/index.html"
 }

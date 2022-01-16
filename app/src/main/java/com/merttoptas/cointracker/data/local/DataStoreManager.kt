@@ -4,14 +4,15 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.merttoptas.cointracker.utils.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-private val Context.dataStore by preferencesDataStore("settings")
+private val Context.dataStore by preferencesDataStore(Constants.KEY_DATA_STORE_SETTINGS)
 
 class DataStoreManager(context: Context) {
     private object PreferencesKeys {
-        val USER_LOGIN = booleanPreferencesKey("user_token")
+        val USER_LOGIN = booleanPreferencesKey(Constants.KEY_USER_TOKEN)
     }
 
     private val dataStore = context.dataStore

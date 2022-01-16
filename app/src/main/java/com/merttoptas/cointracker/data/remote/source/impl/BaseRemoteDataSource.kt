@@ -2,7 +2,7 @@ package com.merttoptas.cointracker.data.remote.source.impl
 
 import com.google.gson.Gson
 import com.merttoptas.cointracker.data.model.APIError
-import com.merttoptas.cointracker.utils.DataState
+import com.merttoptas.cointracker.domain.datastate.DataState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import retrofit2.Response

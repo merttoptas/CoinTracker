@@ -1,4 +1,4 @@
-package com.merttoptas.cointracker.data.repository
+package com.merttoptas.cointracker.domain.repository
 
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.merttoptas.cointracker.data.local.database.CoinDao

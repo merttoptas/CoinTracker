@@ -29,11 +29,11 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18541666666666667" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_coin_detail.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_coin_list.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_coin_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_my_favorite.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/layout_coin_list_item.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/layout_coin_list_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_coin_loading_progress.xml" value="0.296195652173913" />
         <entry key="app/src/main/res/layout/layout_custom_snackbar_include.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/layout/layout_my_favorite_list_item.xml" value="0.3609375" />

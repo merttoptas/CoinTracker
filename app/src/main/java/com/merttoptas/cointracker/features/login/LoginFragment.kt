@@ -43,7 +43,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                                 "Succesfully",
                                 SnackBarEnum.SUCCESS
                             ).show()
-                            NavigationHelper.startMainActivity(requireActivity(),requireContext())
+                            NavigationHelper.startMainActivity(requireActivity(),requireContext(), false)
                         }
                         is LoginViewEffect.FailedLogin -> {
                             effect.errorMessage?.let {

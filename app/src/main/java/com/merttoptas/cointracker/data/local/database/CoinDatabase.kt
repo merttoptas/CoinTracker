@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.merttoptas.cointracker.utils.Constants
 
 @Database(entities = [CoinListEntity::class], version = 1)
 abstract class CoinDatabase : RoomDatabase() {
@@ -19,7 +20,7 @@ abstract class CoinDatabase : RoomDatabase() {
             }
 
         private fun buildDatabase(appContext: Context) =
-            Room.databaseBuilder(appContext, CoinDatabase::class.java, "CoinDatabase")
+            Room.databaseBuilder(appContext, CoinDatabase::class.java, Constants.COIN_DATABASE)
                 .fallbackToDestructiveMigration()
                 .build()
     }

@@ -1,58 +1,38 @@
 package com.merttoptas.cointracker.features.splash
 
-import com.merttoptas.cointracker.data.local.DataStoreManager
-import com.merttoptas.cointracker.data.repository.CoinRepository
-import com.merttoptas.cointracker.features.base.BaseViewModel
-import com.merttoptas.cointracker.features.base.IViewEffect
-import com.merttoptas.cointracker.features.base.IViewState
-import com.merttoptas.cointracker.utils.DataState
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.merttoptas.cointracker.domain.usecase.splash.SplashUseCase
+import com.merttoptas.cointracker.domain.usecase.splash.SplashViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewData
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
+import com.merttoptas.cointracker.domain.viewstate.splash.SplashViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val dataStoreManager: DataStoreManager,
-    private val coinRepository: CoinRepository,
-) : BaseViewModel<SplashViewState, SplashViewEffect>() {
-    override fun createInitialState() = SplashViewState()
-    private val coroutineScope = MainScope()
+    private val splashUseCase: SplashUseCase
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(splashUseCase.getInitialData())
+    val uiState: StateFlow<SplashViewState> = _uiState
 
     init {
-        coroutineScope.launch {
-            dataStoreManager.userLogin.collect { checkUserLogin ->
-                if (checkUserLogin) {
-                    setEffect(SplashViewEffect.DirectToCoinList)
-                } else {
-                    setEffect(SplashViewEffect.DirectToLoginAndRegister)
-                }
-            }
-        }
+        sendToEvent(SplashViewEvent.LoadInitialData(uiState.value))
+    }
 
-        coroutineScope.launch {
-            coinRepository.checkApiStatus().collect {
+    fun sendToEvent(event: SplashViewEvent) {
+        viewModelScope.launch {
+            splashUseCase.invoke(ViewEventWrapper.PageEvent(event)).collect {
                 when (it) {
-                    is DataState.Success -> {
-                        setState { currentState.copy(geckoSays = it.data.gecko_says) }
-                    }
-                    is DataState.Error -> {
-                    }
-                    is DataState.Loading -> {
-                    }
+                    is ViewData.State -> _uiState.emit(it.data)
                 }
             }
         }
     }
-}
-
-data class SplashViewState(
-    val isLoading: Boolean = false,
-    val geckoSays: String? = null,
-) : IViewState
-
-sealed class SplashViewEffect : IViewEffect {
-    object DirectToCoinList : SplashViewEffect()
-    object DirectToLoginAndRegister : SplashViewEffect()
 }

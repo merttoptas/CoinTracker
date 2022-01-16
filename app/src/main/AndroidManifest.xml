@@ -13,9 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CoinTracker">
-        <activity
-            android:name=".features.loginandregister.LoginAndRegisterActivity"
-            android:exported="true" />
+
         <activity
             android:name=".features.splash.SplashActivity"
             android:exported="true">
@@ -26,8 +24,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:name=".features.mainactivity.MainActivity"
+            android:exported="true"/>
 
         <meta-data
             android:name="preloaded_fonts"
