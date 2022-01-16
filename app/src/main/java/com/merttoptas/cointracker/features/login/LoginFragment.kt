@@ -6,7 +6,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentLoginBinding
+import com.merttoptas.cointracker.domain.usecase.login.LoginViewEvent
 import com.merttoptas.cointracker.features.base.BaseFragment
+import com.merttoptas.cointracker.features.login.viewmodel.LoginViewModel
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
 import com.merttoptas.cointracker.utils.helper.NavigationHelper
@@ -29,40 +31,38 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
         lifecycleScope.launchWhenResumed {
             launch {
-                loginViewModel.viewState.collect {
+                loginViewModel.uiState.collect {
                     if (it.isLoading) showProgress() else hideProgress()
-                }
-            }
 
-            launch {
-                loginViewModel.viewEffect.collect { effect ->
-                    when (effect) {
-                        is LoginViewEffect.SuccessfullyLogin -> {
-                            SnackBarBuilder(
-                                this@LoginFragment,
-                                "Succesfully",
-                                SnackBarEnum.SUCCESS
-                            ).show()
-                            NavigationHelper.startMainActivity(requireActivity(),requireContext(), false)
-                        }
-                        is LoginViewEffect.FailedLogin -> {
-                            effect.errorMessage?.let {
-                                SnackBarBuilder(
-                                    this@LoginFragment,
-                                    effect.errorMessage,
-                                    SnackBarEnum.ERROR
-                                ).show()
-                            }
-                        }
+                    it.errorMessage?.let {
+                        SnackBarBuilder(
+                            this@LoginFragment,
+                            it,
+                            SnackBarEnum.ERROR
+                        ).show()
+                    }
+
+                    if (it.isDirectToMain == true) {
+                        SnackBarBuilder(
+                            this@LoginFragment,
+                            "Succesfully",
+                            SnackBarEnum.SUCCESS
+                        ).show()
+                        NavigationHelper.startMainActivity(
+                            requireActivity(),
+                            requireContext(),
+                            false
+                        )
                     }
                 }
             }
         }
 
-        binding.btnLogin.setOnClickListener {
-            loginViewModel.emailChange(binding.etEmail.text.trim().toString())
-            loginViewModel.passwordChange(binding.etPassword.text.trim().toString())
+        onLogin()
+    }
 
+    private fun onLogin(){
+        binding.btnLogin.setOnClickListener {
             binding.etEmail.setOnFocusChangeListener { view, focus ->
                 if (focus) {
                     hideKeyboard(view)
@@ -73,7 +73,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     hideKeyboard(view)
                 }
             }
-            loginViewModel.login()
+
+            loginViewModel.sendToEvent(
+                LoginViewEvent.OnLoginEvent(
+                    loginViewModel.uiState.value.copy(
+                        email = binding.etEmail.text.trim().toString(),
+                        password = binding.etPassword.text.trim().toString()
+                    )
+                )
+            )
         }
     }
 }

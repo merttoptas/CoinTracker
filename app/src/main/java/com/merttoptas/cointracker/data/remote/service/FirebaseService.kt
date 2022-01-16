@@ -1,10 +1,17 @@
 package com.merttoptas.cointracker.data.remote.service
 
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
 class FirebaseService @Inject constructor(
@@ -67,5 +74,22 @@ class FirebaseService @Inject constructor(
         return data
     }
 
+    fun login(email: String, password: String): Flow<LoginData> = channelFlow {
+        val callback = firebaseAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(object : OnCompleteListener<AuthResult> {
+                override fun onComplete(task: Task<AuthResult>) {
+                    if (task.isSuccessful) {
+                        trySendBlocking(LoginData(true, null))
+                    } else {
+                        trySendBlocking(LoginData(false, task.exception?.message))
+
+                    }
+                }
+            })
+        awaitClose { callback.isCanceled() }
+    }
+
     fun getUid(): String? = firebaseAuth.uid
 }
+
+data class LoginData(val result: Boolean, val error: String?)
