@@ -7,6 +7,7 @@ import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.domain.usecase.login.LoginUseCase
 import com.merttoptas.cointracker.domain.usecase.splash.SplashUseCase
 import com.merttoptas.cointracker.domain.usecase.main.MainActivityUseCase
+import com.merttoptas.cointracker.domain.usecase.register.RegisterUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +38,13 @@ object UseCaseModule {
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
         firebaseService: FirebaseService
     ) = LoginUseCase(defaultDispatcher, dataStoreManager, firebaseService)
+
+    @ViewModelScoped
+    @Provides
+    fun provideRegisterUseCase(
+        dataStoreManager: DataStoreManager,
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+        firebaseService: FirebaseService
+    ) = RegisterUseCase(defaultDispatcher, dataStoreManager, firebaseService)
 
 }

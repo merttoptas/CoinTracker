@@ -7,10 +7,12 @@ import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentLoginBinding
 import com.merttoptas.cointracker.domain.usecase.login.LoginViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.login.viewmodel.LoginViewModel
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
+import com.merttoptas.cointracker.utils.autoCleared
 import com.merttoptas.cointracker.utils.helper.NavigationHelper
 import com.merttoptas.cointracker.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,8 +21,10 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
-    private val loginViewModel by viewModels<LoginViewModel>()
+    private val viewModel by viewModels<LoginViewModel>()
     override val layoutId: Int = R.layout.fragment_login
+
+    override var binding by autoCleared<FragmentLoginBinding>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,7 +35,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
         lifecycleScope.launchWhenResumed {
             launch {
-                loginViewModel.uiState.collect {
+                viewModel.uiState.collect {
                     if (it.isLoading) showProgress() else hideProgress()
 
                     it.errorMessage?.let {
@@ -41,18 +45,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                             SnackBarEnum.ERROR
                         ).show()
                     }
+                }
+            }
 
-                    if (it.isDirectToMain == true) {
-                        SnackBarBuilder(
-                            this@LoginFragment,
-                            "Succesfully",
-                            SnackBarEnum.SUCCESS
-                        ).show()
-                        NavigationHelper.startMainActivity(
+            launch {
+                viewModel.uiEvent.collect { event ->
+                    if (event is ViewEventWrapper.PageEvent && event.pageEvent is LoginViewEvent.SuccessfullyLogin) {
+                           NavigationHelper.startMainActivity(
                             requireActivity(),
                             requireContext(),
                             false
                         )
+                    } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is LoginViewEvent.SnackBarError) {
+                        event.pageEvent.message?.let {
+                            SnackBarBuilder(
+                                this@LoginFragment,
+                                it,
+                                SnackBarEnum.ERROR
+                            ).show()
+                        }
                     }
                 }
             }
@@ -61,7 +72,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         onLogin()
     }
 
-    private fun onLogin(){
+    private fun onLogin() {
         binding.btnLogin.setOnClickListener {
             binding.etEmail.setOnFocusChangeListener { view, focus ->
                 if (focus) {
@@ -74,9 +85,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 }
             }
 
-            loginViewModel.sendToEvent(
+            viewModel.sendToEvent(
                 LoginViewEvent.OnLoginEvent(
-                    loginViewModel.uiState.value.copy(
+                    viewModel.uiState.value.copy(
                         email = binding.etEmail.text.trim().toString(),
                         password = binding.etPassword.text.trim().toString()
                     )

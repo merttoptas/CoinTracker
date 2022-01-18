@@ -89,6 +89,23 @@ class FirebaseService @Inject constructor(
         awaitClose { callback.isCanceled() }
     }
 
+    fun register(email: String, password: String): Flow<LoginData> = channelFlow {
+        val callBack = firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    firebaseAuth.currentUser?.uid?.let {
+                        val data = HashMap<String, Any>()
+                        data["email"] = email
+                        setUser(it, data)
+                    }
+                    trySendBlocking(LoginData(true, null))
+                } else {
+                    trySendBlocking(LoginData(false, task.exception?.message))
+                }
+            }
+        awaitClose { callBack.isCanceled() }
+    }
+
     fun getUid(): String? = firebaseAuth.uid
 }
 

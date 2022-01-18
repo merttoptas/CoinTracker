@@ -9,7 +9,10 @@ sealed class ViewEventWrapper<T : IViewEvent> {
     class PageEvent<T : IViewEvent>(val pageEvent: T) : ViewEventWrapper<T>()
 }
 
-sealed class ViewData<ViewState : IViewState> {
-    class State<ViewState : IViewState>(val data: ViewState) :
-        ViewData<ViewState>()
+sealed class ViewData<ViewState : IViewState, SubViewEvent : IViewEvent> {
+    class State<ViewState : IViewState, SubViewEvent : IViewEvent>(val data: ViewState) :
+        ViewData<ViewState, SubViewEvent>()
+
+    class Event<ViewState : IViewState, SubViewEvent : IViewEvent>(val data: ViewEventWrapper<SubViewEvent>) :
+        ViewData<ViewState, SubViewEvent>()
 }

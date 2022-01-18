@@ -15,7 +15,7 @@ abstract class BaseFragment<binding : ViewDataBinding> : Fragment() {
     abstract val layoutId: Int
 
     private var progressBar: CoinDialogProgress? = null
-    lateinit var binding: binding
+    open lateinit var binding: binding
     protected val navController by lazy { findNavController() }
 
     override fun onCreateView(

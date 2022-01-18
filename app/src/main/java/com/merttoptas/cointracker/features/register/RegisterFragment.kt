@@ -6,11 +6,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentRegisterBinding
+import com.merttoptas.cointracker.domain.usecase.register.RegisterViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
-import com.merttoptas.cointracker.features.register.viewmodel.RegisterViewEffect
 import com.merttoptas.cointracker.features.register.viewmodel.RegisterViewModel
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
+import com.merttoptas.cointracker.utils.autoCleared
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -18,42 +20,40 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
 
-    private val registerViewModel by viewModels<RegisterViewModel>()
+    private val viewModel by viewModels<RegisterViewModel>()
     override val layoutId: Int = R.layout.fragment_register
+    override var binding by autoCleared<FragmentRegisterBinding>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             btnRegister.setOnClickListener {
-                registerViewModel.emailChange(etEmail.text.trim().toString())
-                registerViewModel.passwordChange(etPassword.text.trim().toString())
-                registerViewModel.confirmPasswordChange(etConfirmPassword.text.trim().toString())
-
-                registerViewModel.register()
+                viewModel.sendToEvent(RegisterViewEvent.OnLoginEvent(viewModel.uiState.value.copy(
+                    email = etEmail.text.trim().toString(),
+                    password = etPassword.text.trim().toString(),
+                    confirmPassword = etConfirmPassword.text.trim().toString(),
+                )))
             }
         }
 
         lifecycleScope.launchWhenResumed {
             launch {
-                registerViewModel.viewState.collect {
+                viewModel.uiState.collect {
                     if (it.isLoading) showProgress() else hideProgress()
                 }
             }
 
             launch {
-                registerViewModel.viewEffect.collect { effect ->
-                    when (effect) {
-                        is RegisterViewEffect.SuccessfullyRegister -> {
-                            navigate(R.id.action_registerFragment_to_loginFragment)
-                        }
-                        is RegisterViewEffect.FailedRegister -> {
-                            effect.errorMessage?.let {
-                                SnackBarBuilder(
-                                    this@RegisterFragment,
-                                    effect.errorMessage,
-                                    SnackBarEnum.ERROR
-                                ).show()
-                            }
+                viewModel.uiEvent.collect { event ->
+                    if (event is ViewEventWrapper.PageEvent && event.pageEvent is RegisterViewEvent.SuccessfullyRegister) {
+                        navigate(R.id.action_registerFragment_to_loginFragment)
+                    } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is RegisterViewEvent.SnackBarError) {
+                        event.pageEvent.message?.let {
+                            SnackBarBuilder(
+                                this@RegisterFragment,
+                                it,
+                                SnackBarEnum.ERROR
+                            ).show()
                         }
                     }
                 }

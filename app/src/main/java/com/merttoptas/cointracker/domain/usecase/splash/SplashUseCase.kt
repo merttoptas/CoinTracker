@@ -28,7 +28,7 @@ class SplashUseCase @Inject constructor(
         }
     }
 
-    private fun checkUserLogin(viewState: SplashViewState) = flow<ViewData<SplashViewState>> {
+    private fun checkUserLogin(viewState: SplashViewState) = flow<ViewData<SplashViewState, SplashViewEvent>> {
         dataStoreManager.userLogin.collect { checkUserLogin ->
             if (checkUserLogin) {
                 emit(ViewData.State(viewState.copy(isCheckUserLogin = true)))
@@ -38,7 +38,7 @@ class SplashUseCase @Inject constructor(
         }
     }.flowOn(defaultDispatcher)
 
-    private fun checkApiStatus(viewState: SplashViewState) = flow<ViewData<SplashViewState>> {
+    private fun checkApiStatus(viewState: SplashViewState) = flow<ViewData<SplashViewState, SplashViewEvent>> {
         coinRepository.checkApiStatus().collect {
             when (it) {
                 is DataState.Success -> {

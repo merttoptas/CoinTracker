@@ -17,7 +17,7 @@ import javax.inject.Inject
 class LoginUseCase @Inject constructor(
     private val defaultDispatcher: CoroutineDispatcher,
     private val dataStoreManager: DataStoreManager,
-    private val firebaseService: FirebaseService
+    private val firebaseService: FirebaseService,
 ) : IUseCase<LoginViewEvent, LoginViewState> {
     override fun getInitialData(event: LoginViewEvent?): LoginViewState {
         return LoginViewState()
@@ -29,10 +29,16 @@ class LoginUseCase @Inject constructor(
         }
     }
 
-    private fun login(viewState: LoginViewState) = flow<ViewData<LoginViewState>> {
-        emit(ViewData.State(viewState.copy(isLoading = true,)))
+    private fun login(viewState: LoginViewState) = flow<ViewData<LoginViewState, LoginViewEvent>> {
+        emit(ViewData.State(viewState.copy(isLoading = true)))
         viewState.validFields()?.let {
-            emit(ViewData.State(viewState.copy(errorMessage = it, isLoading = false)))
+            emit(ViewData.State(viewState.copy(isLoading = false)))
+            emit(
+                ViewData.Event(
+                    ViewEventWrapper.PageEvent(LoginViewEvent.SnackBarError(
+                        it))
+                )
+            )
         } ?: kotlin.run {
             firebaseService.login(viewState.email ?: "", viewState.password ?: "")
                 .collect { loginData ->
@@ -41,9 +47,13 @@ class LoginUseCase @Inject constructor(
                         emit(
                             ViewData.State(
                                 viewState.copy(
-                                    isDirectToMain = true,
                                     isLoading = false
                                 )
+                            )
+                        )
+                        emit(
+                            ViewData.Event(
+                                ViewEventWrapper.PageEvent(LoginViewEvent.SuccessfullyLogin)
                             )
                         )
                     } else {
@@ -64,4 +74,6 @@ class LoginUseCase @Inject constructor(
 
 sealed class LoginViewEvent : IViewEvent {
     class OnLoginEvent(val viewState: LoginViewState) : LoginViewEvent()
+    object SuccessfullyLogin : LoginViewEvent()
+    class SnackBarError(val message: String?) : LoginViewEvent()
 }

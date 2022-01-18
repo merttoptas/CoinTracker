@@ -17,7 +17,7 @@ class MainActivityUseCase @Inject constructor() :
         return MainActivityViewState()
     }
 
-    override fun invoke(event: ViewEventWrapper<MainActivityViewEvent>): Flow<ViewData<MainActivityViewState>> {
+    override fun invoke(event: ViewEventWrapper<MainActivityViewEvent>): Flow<ViewData<MainActivityViewState, MainActivityViewEvent>> {
         TODO("Not yet implemented")
     }
 
