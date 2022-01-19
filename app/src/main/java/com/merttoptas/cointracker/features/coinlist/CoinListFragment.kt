@@ -7,11 +7,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentCoinListBinding
+import com.merttoptas.cointracker.domain.usecase.coinlist.CoinListViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.features.coinlist.adapter.CoinListAdapter
 import com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener
 import com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewModel
+import com.merttoptas.cointracker.utils.SnackBarBuilder
+import com.merttoptas.cointracker.utils.SnackBarEnum
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListener {
 
-    private val loginViewModel by viewModels<CoinListViewModel>()
+    private val viewModel by viewModels<CoinListViewModel>()
     override val layoutId: Int = R.layout.fragment_coin_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,11 +33,25 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
 
         lifecycleScope.launchWhenResumed {
             launch {
-                loginViewModel.viewState.collect {
-                  if (it.isLoading) showProgress() else hideProgress()
+                viewModel.uiState.collect {
+                    if (it.isLoading) showProgress() else hideProgress()
 
                     binding.rvCoinList.adapter = CoinListAdapter(this@CoinListFragment).apply {
                         submitList(it.coinList)
+                    }
+                }
+            }
+
+            launch {
+                viewModel.uiEvent.collect { event ->
+                    if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinListViewEvent.SnackBarError) {
+                        event.pageEvent.message?.let {
+                            SnackBarBuilder(
+                                this@CoinListFragment,
+                                it,
+                                SnackBarEnum.ERROR
+                            ).show()
+                        }
                     }
                 }
             }
@@ -51,7 +69,9 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextChange(p0: String?): Boolean {
                 p0?.let {
-                    loginViewModel.getFilterQueryData(p0)
+                    viewModel.sendToEvent(CoinListViewEvent.OnFilterQueryData(viewModel.uiState.value.copy(
+                        query = p0
+                    )))
                 } ?: kotlin.run {
                     return true
                 }
@@ -61,7 +81,7 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 p0?.let {
                     binding.rvCoinList.adapter = CoinListAdapter(this@CoinListFragment).apply {
-                        submitList(loginViewModel.currentState.filteredCoinList)
+                        submitList(viewModel.uiState.value.filteredCoinList)
                     }
                     return true
                 }

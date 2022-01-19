@@ -3,7 +3,9 @@ package com.merttoptas.cointracker.domain.di
 import com.merttoptas.cointracker.data.di.DefaultDispatcher
 import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
+import com.merttoptas.cointracker.domain.repository.CoinDatabaseRepository
 import com.merttoptas.cointracker.domain.repository.CoinRepository
+import com.merttoptas.cointracker.domain.usecase.coinlist.CoinListUseCase
 import com.merttoptas.cointracker.domain.usecase.login.LoginUseCase
 import com.merttoptas.cointracker.domain.usecase.splash.SplashUseCase
 import com.merttoptas.cointracker.domain.usecase.main.MainActivityUseCase
@@ -24,7 +26,7 @@ object UseCaseModule {
     fun provideSplashUseCase(
         dataStoreManager: DataStoreManager,
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
-        coinRepository: CoinRepository
+        coinRepository: CoinRepository,
     ) = SplashUseCase(defaultDispatcher, dataStoreManager, coinRepository)
 
     @ViewModelScoped
@@ -36,7 +38,7 @@ object UseCaseModule {
     fun provideLoginUseCase(
         dataStoreManager: DataStoreManager,
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
-        firebaseService: FirebaseService
+        firebaseService: FirebaseService,
     ) = LoginUseCase(defaultDispatcher, dataStoreManager, firebaseService)
 
     @ViewModelScoped
@@ -44,7 +46,15 @@ object UseCaseModule {
     fun provideRegisterUseCase(
         dataStoreManager: DataStoreManager,
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
-        firebaseService: FirebaseService
+        firebaseService: FirebaseService,
     ) = RegisterUseCase(defaultDispatcher, dataStoreManager, firebaseService)
 
+    @ViewModelScoped
+    @Provides
+    fun provideCoinListUseCase(
+        coinRepository: CoinRepository,
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+        firebaseService: FirebaseService,
+        coinDatabaseRepository: CoinDatabaseRepository,
+    ) = CoinListUseCase(defaultDispatcher, coinRepository, firebaseService, coinDatabaseRepository)
 }
