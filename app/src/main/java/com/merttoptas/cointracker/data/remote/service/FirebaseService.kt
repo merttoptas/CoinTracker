@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.merttoptas.cointracker.data.model.CoinResponse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class FirebaseService @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val firebaseFirestore: FirebaseFirestore,
 ) {
 
     fun setUser(userId: String, user: HashMap<String, Any>) {
@@ -29,7 +30,7 @@ class FirebaseService @Inject constructor(
 
     fun insertFavoriteCoins(
         userId: String,
-        coin: HashMap<String, Any>
+        coin: HashMap<String, Any>,
     ): Pair<Boolean, String?>? {
         var data: Pair<Boolean, String>? = null
 
@@ -61,6 +62,37 @@ class FirebaseService @Inject constructor(
     fun getFavoriteCoins(userId: String): CollectionReference {
         return firebaseFirestore.collection("users").document(userId).collection("favoriteCoinsId")
     }
+
+    fun getFavoriteCoinList(userId: String): Flow<Pair<ArrayList<CoinResponse>, String?>> =
+        channelFlow {
+            val coinList = ArrayList<CoinResponse>()
+            val callback = getFavoriteCoins(userId).get().addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    result.forEach {
+                        val id = it.data["id"].toString()
+                        val name = it.data["name"].toString()
+                        val symbol = it.data["symbol"].toString()
+                        val image = it.data["image"].toString()
+                        val currentPrice = it.data["currentPrice"].toString()
+                        val changePercent = it.data["changePercent"].toString()
+
+                        val coin = CoinResponse(
+                            id,
+                            symbol,
+                            name,
+                            image,
+                            currentPrice = currentPrice.toDoubleOrNull(),
+                            changePercent = changePercent.toDoubleOrNull()
+                        )
+                        coinList.add(coin)
+                    }
+                    trySendBlocking(Pair(coinList, null))
+                }
+            }.addOnFailureListener {
+                trySendBlocking(Pair(arrayListOf(), it.message))
+            }
+            awaitClose { callback.isCanceled() }
+        }
 
     fun updateFavorite(userId: String, coin: HashMap<String, Any>): Pair<Boolean, String?>? {
         var data: Pair<Boolean, String>? = null

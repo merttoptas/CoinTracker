@@ -34,7 +34,7 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
 
         lifecycleScope.launchWhenResumed {
             launch {
-                viewModel.viewState.collect {
+                viewModel.uiState.collect {
                     if (it.isLoading) showProgress() else hideProgress()
                     binding.dataHolder = it.coinDetail
                     binding.isFavorite = it.isFavorite ?: false
@@ -48,8 +48,9 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                 }
             }
             launch {
-                viewModel.viewEffect.collect {
-                    when (it) {
+                viewModel.uiEvent.collect {
+                    /*
+                       when (it) {
                         is CoinDetailViewEffect.Failed -> {
                             if (it.status.not()) {
                                 SnackBarBuilder(
@@ -60,6 +61,7 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                             }
                         }
                     }
+                     */
                 }
             }
         }

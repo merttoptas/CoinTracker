@@ -8,9 +8,9 @@ import com.merttoptas.cointracker.data.model.TimeInterval
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
-import com.merttoptas.cointracker.features.base.IViewEffect
 import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.domain.datastate.DataState
+import com.merttoptas.cointracker.domain.viewstate.base.IViewEvent
 import com.merttoptas.cointracker.domain.viewstate.base.IViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.MainScope
@@ -81,12 +81,15 @@ class CoinDetailViewModel @Inject constructor(
                     firebaseService.getUid() ?: "",
                     currentState.coin
                 )?.let {
-                    setEffect(
+                    /*
+                     setEvent(
                         CoinDetailViewEffect.Failed(
                             status = it.first,
                             errorMessage = it.second
                         )
                     )
+                     */
+
                     setState { currentState.copy(isFavorite = false) }
                 }
                 prepareFavoriteList()
@@ -142,7 +145,7 @@ class CoinDetailViewModel @Inject constructor(
                 }
                 updateImageStatus()
             }.addOnFailureListener {
-                setEffect(CoinDetailViewEffect.Failed(true, it.message))
+             //   setEffect(CoinDetailViewEffect.Failed(true, it.message))
             }
         }
     }
@@ -272,6 +275,6 @@ val timeIntervalList = listOf(
     TimeInterval("max", "Max Price Change", false),
 )
 
-sealed class CoinDetailViewEffect : IViewEffect {
+sealed class CoinDetailViewEffect : IViewEvent {
     class Failed(val status: Boolean, val errorMessage: String?) : CoinDetailViewEffect()
 }

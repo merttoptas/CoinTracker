@@ -6,9 +6,11 @@ import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.repository.CoinDatabaseRepository
 import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.domain.usecase.coinlist.CoinListUseCase
+import com.merttoptas.cointracker.domain.usecase.favoritecoinlist.FavoriteCoinListUseCase
 import com.merttoptas.cointracker.domain.usecase.login.LoginUseCase
 import com.merttoptas.cointracker.domain.usecase.splash.SplashUseCase
 import com.merttoptas.cointracker.domain.usecase.main.MainActivityUseCase
+import com.merttoptas.cointracker.domain.usecase.myfavorite.MyFavoriteUseCase
 import com.merttoptas.cointracker.domain.usecase.register.RegisterUseCase
 import dagger.Module
 import dagger.Provides
@@ -57,4 +59,20 @@ object UseCaseModule {
         firebaseService: FirebaseService,
         coinDatabaseRepository: CoinDatabaseRepository,
     ) = CoinListUseCase(defaultDispatcher, coinRepository, firebaseService, coinDatabaseRepository)
+
+    @ViewModelScoped
+    @Provides
+    fun provideFavoriteCoinListUseCase(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+        firebaseService: FirebaseService,
+    ) = FavoriteCoinListUseCase(defaultDispatcher, firebaseService)
+
+    @ViewModelScoped
+    @Provides
+    fun provideMyFavoriteUseCase(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+        firebaseService: FirebaseService,
+        favoriteCoinListUseCase: FavoriteCoinListUseCase
+    ) = MyFavoriteUseCase(defaultDispatcher, firebaseService, favoriteCoinListUseCase)
+
 }

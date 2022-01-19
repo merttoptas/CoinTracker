@@ -6,11 +6,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.FragmentMyFavoriteBinding
+import com.merttoptas.cointracker.domain.usecase.myfavorite.MyFavoriteViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.features.myfavorite.adapter.MyFavoriteAdapter
 import com.merttoptas.cointracker.features.myfavorite.adapter.OnClickListener
-import com.merttoptas.cointracker.features.myfavorite.viewmodel.MyFavoriteViewEffect
 import com.merttoptas.cointracker.features.myfavorite.viewmodel.MyFavoriteViewModel
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
@@ -26,10 +27,10 @@ class MyFavoriteFragment : BaseFragment<FragmentMyFavoriteBinding>(), OnClickLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launchWhenResumed {
 
+        lifecycleScope.launchWhenResumed {
             launch {
-                viewModel.viewState.collect {
+                viewModel.uiState.collect {
                     if (it.isLoading) showProgress() else hideProgress()
 
                     binding.rvFavoriteList.adapter =
@@ -38,17 +39,16 @@ class MyFavoriteFragment : BaseFragment<FragmentMyFavoriteBinding>(), OnClickLis
                         }
                 }
             }
+
             launch {
-                viewModel.viewEffect.collect {
-                    when (it) {
-                        is MyFavoriteViewEffect.Failed -> {
-                            it.errorMessage?.let { safeMessage ->
-                                SnackBarBuilder(
-                                    this@MyFavoriteFragment,
-                                    safeMessage,
-                                    SnackBarEnum.ERROR
-                                ).show()
-                            }
+                viewModel.uiEvent.collect { event ->
+                    if (event is ViewEventWrapper.PageEvent && event.pageEvent is MyFavoriteViewEvent.SnackBarError) {
+                        event.pageEvent.errorMessage?.let {
+                            SnackBarBuilder(
+                                this@MyFavoriteFragment,
+                                it,
+                                SnackBarEnum.ERROR
+                            ).show()
                         }
                     }
                 }
