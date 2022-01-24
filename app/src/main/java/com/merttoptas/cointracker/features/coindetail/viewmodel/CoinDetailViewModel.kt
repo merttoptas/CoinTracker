@@ -4,63 +4,41 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.model.TimeInterval
-import com.merttoptas.cointracker.data.remote.service.FirebaseService
-import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
-import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.domain.datastate.DataState
+import com.merttoptas.cointracker.domain.usecase.coindetail.CoinDetailUseCase
 import com.merttoptas.cointracker.domain.usecase.coindetail.CoinDetailViewEvent
-import com.merttoptas.cointracker.domain.viewstate.base.IViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewData
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.domain.viewstate.coindetail.CoinDetailViewState
+import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CoinDetailViewModel @Inject constructor(
-    private val coinRepository: CoinRepository,
-    private val firebaseService: FirebaseService,
+    private val coinDetailUseCase: CoinDetailUseCase,
     savedStateHandle: SavedStateHandle
-) :
+) : BaseViewModel<CoinDetailViewState, CoinDetailViewEvent>() {
 
-    BaseViewModel<CoinDetailViewState, CoinDetailViewEvent>() {
-
-    private val coroutineScope = MainScope()
+    private val _uiState = MutableStateFlow(coinDetailUseCase.getInitialData(CoinDetailViewEvent.LoadInitialData(viewState = CoinDetailViewState(),savedStateHandle.get<String>(
+         CoinDetailFragment.COIN_ID))))
+    override val uiState: StateFlow<CoinDetailViewState> = _uiState
 
     init {
-        coroutineScope.launch {
-            setState { currentState.copy(isLoading = true) }
-            savedStateHandle.get<String>(CoinDetailFragment.COIN_ID)?.let { safeCoinId ->
-                coinRepository.getCoinDetail(safeCoinId).collect {
-                    when (it) {
-                        is DataState.Success -> {
-                            setState {
-                                currentState.copy(
-                                    coinDetail = it.data,
-                                    isLoading = false,
-                                    coinId = safeCoinId
-                                )
-                            }
-                            getFavoriteCoins()
-                        }
-                        is DataState.Error -> {
-                            setState {
-                                currentState.copy(
-                                    errorMessage = it.apiError?.message,
-                                    isLoading = false
-                                )
-                            }
-                        }
-                        is DataState.Loading -> {
-                            setState { currentState.copy(isLoading = true) }
-                        }
-                    }
-                }
+        sendToEvent(CoinDetailViewEvent.LoadInitialData(coinId = savedStateHandle.get<String>(CoinDetailFragment.COIN_ID)))
+    }
 
-                getCoinHistory()
+    fun sendToEvent(event: CoinDetailViewEvent) {
+        viewModelScope.launch {
+            coinDetailUseCase.invoke(ViewEventWrapper.PageEvent(event)).collect {
+                when (it) {
+                    is ViewData.State -> _uiState.emit(it.data)
+                    is ViewData.Event -> setEvent(it.data)
+                }
             }
         }
     }
@@ -68,10 +46,6 @@ class CoinDetailViewModel @Inject constructor(
     fun timeIntervalChange(value: TimeInterval?) {
         setState { currentState.copy(interval = value) }
         updateTimeInterval()
-    }
-
-    fun refreshIntervalChange(value: Int) {
-        setState { currentState.copy(refreshInterval = value) }
     }
 
     fun updateFavoriteCoin() {

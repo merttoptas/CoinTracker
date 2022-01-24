@@ -16,7 +16,7 @@ abstract class BaseViewModel<State : IViewState, Event : IViewEvent> : ViewModel
     val currentState: State get() = uiState.value
 
     private val _uiState = MutableStateFlow(initialState)
-    val uiState: StateFlow<State> = _uiState
+    open val uiState: StateFlow<State> = _uiState
 
     private val _uiEvent = MutableSharedFlow<ViewEventWrapper<Event>>()
     val uiEvent: SharedFlow<ViewEventWrapper<Event>> = _uiEvent

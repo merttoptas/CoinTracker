@@ -5,6 +5,7 @@ import com.merttoptas.cointracker.data.local.DataStoreManager
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.repository.CoinDatabaseRepository
 import com.merttoptas.cointracker.domain.repository.CoinRepository
+import com.merttoptas.cointracker.domain.usecase.coindetail.CoinDetailUseCase
 import com.merttoptas.cointracker.domain.usecase.coinlist.CoinListUseCase
 import com.merttoptas.cointracker.domain.usecase.favoritecoinlist.FavoriteCoinListUseCase
 import com.merttoptas.cointracker.domain.usecase.login.LoginUseCase
@@ -74,5 +75,14 @@ object UseCaseModule {
         firebaseService: FirebaseService,
         favoriteCoinListUseCase: FavoriteCoinListUseCase
     ) = MyFavoriteUseCase(defaultDispatcher, firebaseService, favoriteCoinListUseCase)
+
+    @ViewModelScoped
+    @Provides
+    fun provideCoinDetailUseCase(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+        coinRepository: CoinRepository,
+        firebaseService: FirebaseService,
+        favoriteCoinListUseCase: FavoriteCoinListUseCase
+    ) = CoinDetailUseCase(defaultDispatcher, coinRepository, firebaseService, favoriteCoinListUseCase )
 
 }

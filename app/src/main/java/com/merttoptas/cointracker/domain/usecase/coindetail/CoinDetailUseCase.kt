@@ -1,6 +1,5 @@
 package com.merttoptas.cointracker.domain.usecase.coindetail
 
-import androidx.lifecycle.SavedStateHandle
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.datastate.DataState
 import com.merttoptas.cointracker.domain.repository.CoinRepository
@@ -30,43 +29,46 @@ class CoinDetailUseCase @Inject constructor(
 
     override fun invoke(event: ViewEventWrapper<CoinDetailViewEvent>) = flow {
         if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.LoadInitialData) {
-            emitAll(getCoinDetail(event.pageEvent.viewState))
+         emitAll(getCoinDetail(coinId = event.pageEvent.coinId, viewState = event.pageEvent.viewState))
         }
     }
 
-    private fun getCoinDetail(viewState: CoinDetailViewState, coinId: String) =
+    private fun getCoinDetail(viewState: CoinDetailViewState, coinId: String?) =
         flow<ViewData<CoinDetailViewState, CoinDetailViewEvent>> {
-            coinRepository.getCoinDetail(coinId).collect {
-                when (it) {
-                    is DataState.Success -> {
-                        emit(
-                            ViewData.State(
-                                viewState.copy(
-                                    coinDetail = it.data,
-                                    isLoading = false,
-                                    coinId = coinId
-                                )
-                            )
-                        )
-                        getFavoriteCoinList(viewState)
-                    }
-                    is DataState.Error -> {
-                        emit(
-                            ViewData.Event(
-                                ViewEventWrapper.PageEvent(
-                                    CoinDetailViewEvent.SnackBarError(
-                                        it.apiError?.message
+            coinId?.let {
+                coinRepository.getCoinDetail(coinId).collect {
+                    when (it) {
+                        is DataState.Success -> {
+                            emit(
+                                ViewData.State(
+                                    viewState.copy(
+                                        coinDetail = it.data,
+                                        isLoading = false,
+                                        coinId = coinId
                                     )
                                 )
                             )
-                        )
-                        emit(ViewData.State(viewState.copy(isLoading = false)))
+                            emitAll(getFavoriteCoinList(viewState))
+                        }
+                        is DataState.Error -> {
+                            emit(
+                                ViewData.Event(
+                                    ViewEventWrapper.PageEvent(
+                                        CoinDetailViewEvent.SnackBarError(
+                                            it.apiError?.message
+                                        )
+                                    )
+                                )
+                            )
+                            emit(ViewData.State(viewState.copy(isLoading = false)))
+                        }
+                        is DataState.Loading -> {
+                            emit(ViewData.State(viewState.copy(isLoading = true)))
+                        }
                     }
-                    is DataState.Loading -> {
-                        emit(ViewData.State(viewState.copy(isLoading = true)))
-                    }
+                    emitAll(getCoinHistory(viewState))
                 }
-                emitAll(getCoinHistory(viewState))
+
             }
         }.flowOn(defaultDispatcher)
 
@@ -103,36 +105,35 @@ class CoinDetailUseCase @Inject constructor(
         }.flowOn(defaultDispatcher)
 
     private fun getCoinHistory(viewState: CoinDetailViewState) = flow<ViewData<CoinDetailViewState, CoinDetailViewEvent>> {
-            viewState.coinId?.let {
-                coinRepository.getCoinHistory(it, days = viewState.interval?.title ?: "1")
-                    .collect {
-                        when (it) {
-                            is DataState.Success -> {
-                                emit(ViewData.State(viewState.copy(coinHistory = it.data.prices)))
-                            }
-                            is DataState.Error -> {
-                                emit(ViewData.State(viewState.copy(isLoading = false)))
-                                emit(
-                                    ViewData.Event(
-                                        ViewEventWrapper.PageEvent(
-                                            CoinDetailViewEvent.SnackBarError(
-                                                it.apiError?.message
-                                            )
+        viewState.coinId?.let {
+            coinRepository.getCoinHistory(it, days = viewState.interval?.title ?: "1")
+                .collect {
+                    when (it) {
+                        is DataState.Success -> {
+                            emit(ViewData.State(viewState.copy(coinHistory = it.data.prices)))
+                        }
+                        is DataState.Error -> {
+                            emit(ViewData.State(viewState.copy(isLoading = false)))
+                            emit(
+                                ViewData.Event(
+                                    ViewEventWrapper.PageEvent(
+                                        CoinDetailViewEvent.SnackBarError(
+                                            it.apiError?.message
                                         )
                                     )
                                 )
-                            }
-                            is DataState.Loading -> {
-                            }
+                            )
+                        }
+                        is DataState.Loading -> {
                         }
                     }
-            }
+                }
         }
+    }
 }
 
 sealed class CoinDetailViewEvent : IViewEvent {
-    class LoadInitialData(val viewState: CoinDetailViewEvent, val savedStateHandle: SavedStateHandle) :
-        CoinDetailViewEvent()
+    class LoadInitialData(val viewState: CoinDetailViewState,val coinId: String?) : CoinDetailViewEvent()
 
     class SnackBarError(val errorMessage: String?) : CoinDetailViewEvent()
 }
