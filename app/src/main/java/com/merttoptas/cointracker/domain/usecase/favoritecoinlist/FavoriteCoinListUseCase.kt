@@ -29,7 +29,7 @@ class FavoriteCoinListUseCase @Inject constructor(
 
     private fun getFavoriteCoinList(userId: String) =
         flow<ViewData<FavoriteCoinListViewState, FavoriteCoinListViewEvent>> {
-            firebaseService.getFavoriteCoinList(firebaseService.getUid() ?: "").collect {
+            firebaseService.getFavoriteCoinList(userId).collect {
                 emit(ViewData.State(FavoriteCoinListViewState(coinList = it.first)))
                 it.second?.let {
                     emit(ViewData.Event(ViewEventWrapper.PageEvent(FavoriteCoinListViewEvent.SnackBarError(

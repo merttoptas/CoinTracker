@@ -8,7 +8,6 @@ import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.domain.viewstate.login.LoginViewState
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +17,6 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
 ) : BaseViewModel<LoginViewState, LoginViewEvent>() {
 
-    @OptIn(InternalCoroutinesApi::class)
     fun sendToEvent(event: LoginViewEvent) {
         viewModelScope.launch {
             loginUseCase.invoke(ViewEventWrapper.PageEvent(event)).collect {

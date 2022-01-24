@@ -2,7 +2,6 @@ package com.merttoptas.cointracker.features.coindetail.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.merttoptas.cointracker.data.model.CoinDetailResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.model.TimeInterval
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
@@ -10,8 +9,9 @@ import com.merttoptas.cointracker.domain.repository.CoinRepository
 import com.merttoptas.cointracker.features.base.BaseViewModel
 import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.domain.datastate.DataState
+import com.merttoptas.cointracker.domain.usecase.coindetail.CoinDetailViewEvent
 import com.merttoptas.cointracker.domain.viewstate.base.IViewEvent
-import com.merttoptas.cointracker.domain.viewstate.base.IViewState
+import com.merttoptas.cointracker.domain.viewstate.coindetail.CoinDetailViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -25,7 +25,8 @@ class CoinDetailViewModel @Inject constructor(
     private val firebaseService: FirebaseService,
     savedStateHandle: SavedStateHandle
 ) :
-    BaseViewModel<CoinDetailViewState, CoinDetailViewEffect>() {
+
+    BaseViewModel<CoinDetailViewState, CoinDetailViewEvent>() {
 
     private val coroutineScope = MainScope()
 
@@ -254,19 +255,6 @@ class CoinDetailViewModel @Inject constructor(
     override fun createInitialState() = CoinDetailViewState()
 }
 
-data class CoinDetailViewState(
-    val isFavorite: Boolean? = null,
-    val coinId: String? = null,
-    val interval: TimeInterval? = null,
-    val refreshInterval: Int? = null,
-    val coinHistory: List<DoubleArray> = listOf(doubleArrayOf()),
-    val coin: HashMap<String, Any> = hashMapOf(),
-    val timeInterval: List<TimeInterval> = timeIntervalList,
-    val favoriteCoins: ArrayList<CoinResponse>? = null,
-    val coinDetail: CoinDetailResponse? = null,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-) : IViewState
 
 val timeIntervalList = listOf(
     TimeInterval("1", "Daily Price Change", true),
@@ -275,6 +263,3 @@ val timeIntervalList = listOf(
     TimeInterval("max", "Max Price Change", false),
 )
 
-sealed class CoinDetailViewEffect : IViewEvent {
-    class Failed(val status: Boolean, val errorMessage: String?) : CoinDetailViewEffect()
-}
