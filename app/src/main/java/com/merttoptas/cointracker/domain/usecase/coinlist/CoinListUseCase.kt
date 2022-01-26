@@ -63,7 +63,7 @@ class CoinListUseCase @Inject constructor(
                     }
                     is DataState.Loading -> {
                         emit(ViewData.State(viewState.copy(
-                            isLoading = false
+                            isLoading = true
                         )))
                     }
                 }

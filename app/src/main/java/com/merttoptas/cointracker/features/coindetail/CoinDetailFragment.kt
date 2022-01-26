@@ -1,16 +1,19 @@
 package com.merttoptas.cointracker.features.coindetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.data.model.TimeInterval
 import com.merttoptas.cointracker.databinding.FragmentCoinDetailBinding
+import com.merttoptas.cointracker.domain.usecase.coindetail.CoinDetailViewEvent
+import com.merttoptas.cointracker.domain.usecase.login.LoginViewEvent
+import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coindetail.adapter.OnClickListener
 import com.merttoptas.cointracker.features.coindetail.adapter.TimeIntervalAdapter
-import com.merttoptas.cointracker.features.coindetail.viewmodel.CoinDetailViewEffect
 import com.merttoptas.cointracker.features.coindetail.viewmodel.CoinDetailViewModel
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
@@ -48,31 +51,32 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                 }
             }
             launch {
-                viewModel.uiEvent.collect {
-                    /*
-                       when (it) {
-                        is CoinDetailViewEffect.Failed -> {
-                            if (it.status.not()) {
-                                SnackBarBuilder(
-                                    this@CoinDetailFragment,
-                                    it.errorMessage.toString(),
-                                    SnackBarEnum.ERROR
-                                ).show()
-                            }
+                viewModel.uiEvent.collect { event ->
+                    if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.SnackBarError) {
+                        event.pageEvent.errorMessage?.let {
+                            SnackBarBuilder(
+                                this@CoinDetailFragment,
+                                it,
+                                SnackBarEnum.ERROR
+                            ).show()
                         }
                     }
-                     */
                 }
             }
         }
 
         binding.favouriteImageView.setOnClickListener {
-            viewModel.updateFavoriteCoin()
+            viewModel.sendToEvent(CoinDetailViewEvent.OnUpdateFavoriteCoin(viewModel.uiState.value))
         }
 
         binding.btnRefreshInterval.setOnClickListener {
-            viewModel.refreshIntervalChange(binding.etRefreshInterval.text.toString().toInt())
-            viewModel.setRefreshInterval()
+            viewModel.sendToEvent(
+                CoinDetailViewEvent.OnRefreshInterval(
+                    viewModel.uiState.value.copy(
+                        refreshInterval = binding.etRefreshInterval.text.toString().toInt()
+                    )
+                )
+            )
         }
         binding.backBtn.setOnClickListener { navController.popBackStack() }
     }
@@ -89,6 +93,6 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
     }
 
     override fun onChanged(timeInterval: TimeInterval) {
-        viewModel.timeIntervalChange(timeInterval)
+        viewModel.sendToEvent(CoinDetailViewEvent.OnSetTimeInterval(viewModel.uiState.value.copy(interval = timeInterval)))
     }
 }

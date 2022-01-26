@@ -34,7 +34,7 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
         lifecycleScope.launchWhenResumed {
             launch {
                 viewModel.uiState.collect {
-                    if (it.isLoading) showProgress() else hideProgress()
+                 //   if (it.isLoading) showProgress() else hideProgress()
 
                     binding.rvCoinList.adapter = CoinListAdapter(this@CoinListFragment).apply {
                         submitList(it.coinList)

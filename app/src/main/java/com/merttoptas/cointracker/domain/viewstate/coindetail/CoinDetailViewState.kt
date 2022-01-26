@@ -4,7 +4,6 @@ import com.merttoptas.cointracker.data.model.CoinDetailResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.model.TimeInterval
 import com.merttoptas.cointracker.domain.viewstate.base.IViewState
-import com.merttoptas.cointracker.features.coindetail.viewmodel.timeIntervalList
 
 data class CoinDetailViewState(
     val isFavorite: Boolean? = null,
@@ -19,3 +18,10 @@ data class CoinDetailViewState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) : IViewState
+
+val timeIntervalList = listOf(
+    TimeInterval("1", "Daily Price Change", true),
+    TimeInterval("14", "14-Day price Change", false),
+    TimeInterval("30", "Monthly Price Change", false),
+    TimeInterval("max", "Max Price Change", false),
+)
