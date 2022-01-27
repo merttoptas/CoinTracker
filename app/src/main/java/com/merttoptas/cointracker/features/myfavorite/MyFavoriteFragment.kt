@@ -13,8 +13,8 @@ import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.features.myfavorite.adapter.MyFavoriteAdapter
 import com.merttoptas.cointracker.features.myfavorite.adapter.OnClickListener
 import com.merttoptas.cointracker.features.myfavorite.viewmodel.MyFavoriteViewModel
-import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
+import com.merttoptas.cointracker.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -44,11 +44,7 @@ class MyFavoriteFragment : BaseFragment<FragmentMyFavoriteBinding>(), OnClickLis
                 viewModel.uiEvent.collect { event ->
                     if (event is ViewEventWrapper.PageEvent && event.pageEvent is MyFavoriteViewEvent.SnackBarError) {
                         event.pageEvent.errorMessage?.let {
-                            SnackBarBuilder(
-                                this@MyFavoriteFragment,
-                                it,
-                                SnackBarEnum.ERROR
-                            ).show()
+                            showSnackBar(this@MyFavoriteFragment, it, SnackBarEnum.ERROR)
                         }
                     }
                 }

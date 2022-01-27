@@ -14,9 +14,9 @@ import com.merttoptas.cointracker.features.coindetail.CoinDetailFragment
 import com.merttoptas.cointracker.features.coinlist.adapter.CoinListAdapter
 import com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener
 import com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewModel
-import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
 import com.merttoptas.cointracker.utils.autoCleared
+import com.merttoptas.cointracker.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -48,11 +48,7 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
                 viewModel.uiEvent.collect { event ->
                     if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinListViewEvent.SnackBarError) {
                         event.pageEvent.message?.let {
-                            SnackBarBuilder(
-                                this@CoinListFragment,
-                                it,
-                                SnackBarEnum.ERROR
-                            ).show()
+                            showSnackBar(this@CoinListFragment, it, SnackBarEnum.ERROR)
                         }
                     }
                 }

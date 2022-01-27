@@ -1,6 +1,7 @@
 package com.merttoptas.cointracker.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -17,6 +18,14 @@ fun Fragment.hideKeyboard(targetView: View) {
         val imm = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(targetView.windowToken, 0)
     }
+}
+
+fun Fragment.showSnackBar(fragment: Fragment, text: String, snackBarEnum: SnackBarEnum) {
+    SnackBarBuilder(fragment, text, snackBarEnum).show()
+}
+
+fun Activity.showSnackBar(activity: Activity, text: String, snackBarEnum: SnackBarEnum) {
+    SnackBarBuilder(activity, text, snackBarEnum).show()
 }
 
 @BindingAdapter("app:loadUrlImage")

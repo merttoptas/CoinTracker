@@ -10,11 +10,8 @@ import com.merttoptas.cointracker.domain.usecase.login.LoginViewEvent
 import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.login.viewmodel.LoginViewModel
-import com.merttoptas.cointracker.utils.SnackBarBuilder
-import com.merttoptas.cointracker.utils.SnackBarEnum
-import com.merttoptas.cointracker.utils.autoCleared
+import com.merttoptas.cointracker.utils.*
 import com.merttoptas.cointracker.utils.helper.NavigationHelper
-import com.merttoptas.cointracker.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -39,11 +36,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     if (it.isLoading) showProgress() else hideProgress()
 
                     it.errorMessage?.let {
-                        SnackBarBuilder(
-                            this@LoginFragment,
-                            it,
-                            SnackBarEnum.ERROR
-                        ).show()
+                        showSnackBar(this@LoginFragment, it, SnackBarEnum.ERROR)
                     }
                 }
             }
@@ -58,11 +51,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         )
                     } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is LoginViewEvent.SnackBarError) {
                         event.pageEvent.message?.let {
-                            SnackBarBuilder(
-                                this@LoginFragment,
-                                it,
-                                SnackBarEnum.ERROR
-                            ).show()
+                            showSnackBar(this@LoginFragment, it, SnackBarEnum.ERROR)
                         }
                     }
                 }

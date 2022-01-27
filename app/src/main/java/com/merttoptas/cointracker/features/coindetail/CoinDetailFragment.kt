@@ -13,9 +13,9 @@ import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coindetail.adapter.OnClickListener
 import com.merttoptas.cointracker.features.coindetail.adapter.TimeIntervalAdapter
 import com.merttoptas.cointracker.features.coindetail.viewmodel.CoinDetailViewModel
-import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
 import com.merttoptas.cointracker.utils.Utils
+import com.merttoptas.cointracker.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -52,11 +52,7 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                 viewModel.uiEvent.collect { event ->
                     if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.SnackBarError) {
                         event.pageEvent.errorMessage?.let {
-                            SnackBarBuilder(
-                                this@CoinDetailFragment,
-                                it,
-                                SnackBarEnum.ERROR
-                            ).show()
+                            showSnackBar(this@CoinDetailFragment, it, SnackBarEnum.ERROR)
                         }
                     } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnLoadedCoinDetail) {
                         viewModel.sendToEvent(CoinDetailViewEvent.LoadInitialFavoriteCoinList(viewModel.uiState.value))

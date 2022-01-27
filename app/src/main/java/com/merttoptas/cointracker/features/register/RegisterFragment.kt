@@ -10,9 +10,9 @@ import com.merttoptas.cointracker.domain.usecase.register.RegisterViewEvent
 import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.register.viewmodel.RegisterViewModel
-import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
 import com.merttoptas.cointracker.utils.autoCleared
+import com.merttoptas.cointracker.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -49,11 +49,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
                         navigate(R.id.action_registerFragment_to_loginFragment)
                     } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is RegisterViewEvent.SnackBarError) {
                         event.pageEvent.message?.let {
-                            SnackBarBuilder(
-                                this@RegisterFragment,
-                                it,
-                                SnackBarEnum.ERROR
-                            ).show()
+                            showSnackBar(this@RegisterFragment, it, SnackBarEnum.ERROR)
                         }
                     }
                 }

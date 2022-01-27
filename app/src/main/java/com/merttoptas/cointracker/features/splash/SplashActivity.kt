@@ -9,9 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.ActivitySplashBinding
 import com.merttoptas.cointracker.utils.NetworkConnection
-import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
 import com.merttoptas.cointracker.utils.helper.NavigationHelper
+import com.merttoptas.cointracker.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -45,11 +45,11 @@ class SplashActivity : AppCompatActivity() {
         if (NetworkConnection.isNetworkAvailable(applicationContext)) {
             resumeApp()
         } else {
-            SnackBarBuilder(
+            showSnackBar(
                 this,
                 getString(R.string.internet_connection_failed_text),
                 SnackBarEnum.ERROR
-            ).show()
+            )
 
             lifecycleScope.launch {
                 delay(3000)
