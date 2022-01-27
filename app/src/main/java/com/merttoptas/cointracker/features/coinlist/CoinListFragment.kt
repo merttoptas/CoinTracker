@@ -16,6 +16,7 @@ import com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener
 import com.merttoptas.cointracker.features.coinlist.viewmodel.CoinListViewModel
 import com.merttoptas.cointracker.utils.SnackBarBuilder
 import com.merttoptas.cointracker.utils.SnackBarEnum
+import com.merttoptas.cointracker.utils.autoCleared
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
 
     private val viewModel by viewModels<CoinListViewModel>()
     override val layoutId: Int = R.layout.fragment_coin_list
+    override var binding by autoCleared<FragmentCoinListBinding>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

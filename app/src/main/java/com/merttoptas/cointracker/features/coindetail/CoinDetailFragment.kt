@@ -1,7 +1,6 @@
 package com.merttoptas.cointracker.features.coindetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -9,7 +8,6 @@ import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.data.model.TimeInterval
 import com.merttoptas.cointracker.databinding.FragmentCoinDetailBinding
 import com.merttoptas.cointracker.domain.usecase.coindetail.CoinDetailViewEvent
-import com.merttoptas.cointracker.domain.usecase.login.LoginViewEvent
 import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
 import com.merttoptas.cointracker.features.base.BaseFragment
 import com.merttoptas.cointracker.features.coindetail.adapter.OnClickListener
@@ -60,6 +58,10 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                                 SnackBarEnum.ERROR
                             ).show()
                         }
+                    } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnLoadedCoinDetail) {
+                        viewModel.sendToEvent(CoinDetailViewEvent.LoadInitialFavoriteCoinList(viewModel.uiState.value))
+                    }  else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnLoadedFavoriteCoinList) {
+                        viewModel.sendToEvent(CoinDetailViewEvent.LoadInitialCoinHistory(viewModel.uiState.value))
                     }
                 }
             }

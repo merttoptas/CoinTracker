@@ -1,7 +1,5 @@
 package com.merttoptas.cointracker.domain.usecase.coindetail
 
-import android.util.Log
-import com.merttoptas.cointracker.data.model.CoinDetailResponse
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.datastate.DataState
@@ -35,19 +33,10 @@ class CoinDetailUseCase @Inject constructor(
                     viewState = event.pageEvent.viewState.copy(coinId = event.pageEvent.coinId)
                 )
             )
-        } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnLoadedCoinDetail) {
-            Log.d("deneme1", "buraya girdi 1 ")
-            emitAll(getFavoriteCoinList(event.pageEvent.coinDetail, event.pageEvent.coinId))
-        } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnLoadedFavoriteCoinList) {
-            Log.d("deneme1", "buraya girdi 2 ")
-            emitAll(
-                getCoinHistory(
-                    event.pageEvent.viewState,
-                    event.pageEvent.coinDetail,
-                    event.pageEvent.coinId,
-                    event.pageEvent.favoriteCoinList
-                )
-            )
+        } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.LoadInitialFavoriteCoinList) {
+            emitAll(getFavoriteCoinList(event.pageEvent.viewState))
+        } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.LoadInitialCoinHistory) {
+            emitAll(getCoinHistory(event.pageEvent.viewState))
         } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnRefreshInterval) {
             emitAll(setRefreshInterval(event.pageEvent.viewState))
         } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnUpdateFavoriteCoin) {
@@ -64,12 +53,17 @@ class CoinDetailUseCase @Inject constructor(
                     when (data) {
                         is DataState.Success -> {
                             emit(
+                                ViewData.State(
+                                    viewState.copy(
+                                        coinId = coinId,
+                                        coinDetail = data.data
+                                    )
+                                )
+                            )
+                            emit(
                                 ViewData.Event(
                                     ViewEventWrapper.PageEvent(
-                                        CoinDetailViewEvent.OnLoadedCoinDetail(
-                                            data.data,
-                                            coinId
-                                        )
+                                        CoinDetailViewEvent.OnLoadedCoinDetail
                                     )
                                 )
                             )
@@ -95,7 +89,7 @@ class CoinDetailUseCase @Inject constructor(
             }
         }.flowOn(defaultDispatcher)
 
-    private fun getFavoriteCoinList(coinDetail: CoinDetailResponse, coinId: String?) =
+    private fun getFavoriteCoinList(viewState: CoinDetailViewState) =
         flow<ViewData<CoinDetailViewState, CoinDetailViewEvent>> {
             favoriteUseCase.invoke(
                 ViewEventWrapper.PageEvent(
@@ -107,14 +101,18 @@ class CoinDetailUseCase @Inject constructor(
                 when (it) {
                     is ViewData.State -> {
                         emit(
+                            ViewData.State(
+                                viewState.copy(
+                                    favoriteCoins = it.data.coinList,
+                                    isFavorite = updateImageStatus(viewState.copy(favoriteCoins = it.data.coinList), it.data.coinList)
+                                )
+                            )
+                        )
+
+                        emit(
                             ViewData.Event(
                                 ViewEventWrapper.PageEvent(
-                                    CoinDetailViewEvent.OnLoadedFavoriteCoinList(
-                                        CoinDetailViewState(),
-                                        coinDetail = coinDetail,
-                                        coinId = coinId,
-                                        favoriteCoinList = it.data.coinList
-                                    )
+                                    CoinDetailViewEvent.OnLoadedFavoriteCoinList
                                 )
                             )
                         )
@@ -137,12 +135,7 @@ class CoinDetailUseCase @Inject constructor(
             }
         }.flowOn(defaultDispatcher)
 
-    private fun getCoinHistory(
-        viewState: CoinDetailViewState,
-        coinDetail: CoinDetailResponse?,
-        coinId: String?,
-        favoriteCoinList: List<CoinResponse>?
-    ) =
+    private fun getCoinHistory(viewState: CoinDetailViewState) =
         flow<ViewData<CoinDetailViewState, CoinDetailViewEvent>> {
             viewState.coinId?.let {
                 coinRepository.getCoinHistory(it, days = viewState.interval?.title ?: "1")
@@ -154,9 +147,14 @@ class CoinDetailUseCase @Inject constructor(
                                         viewState.copy(
                                             isLoading = false,
                                             coinHistory = it.data.prices,
-                                            coinDetail = coinDetail,
-                                            coinId = coinId,
-                                            favoriteCoins = favoriteCoinList
+                                        )
+                                    )
+                                )
+
+                                emit(
+                                    ViewData.Event(
+                                        ViewEventWrapper.PageEvent(
+                                            CoinDetailViewEvent.OnLoadedCoinHistory(viewState)
                                         )
                                     )
                                 )
@@ -174,6 +172,7 @@ class CoinDetailUseCase @Inject constructor(
                                 )
                             }
                             is DataState.Loading -> {
+                                emit(ViewData.State(viewState.copy(isLoading = true)))
                             }
                         }
                     }
@@ -195,12 +194,7 @@ class CoinDetailUseCase @Inject constructor(
                                         )
                                     )
                                 )
-                                getCoinHistory(
-                                    viewState,
-                                    viewState.coinDetail,
-                                    viewState.coinId,
-                                    viewState.favoriteCoins
-                                )
+                                getCoinHistory(viewState)
                             }
                             is DataState.Error -> {
                                 emit(
@@ -283,18 +277,16 @@ class CoinDetailUseCase @Inject constructor(
         return data
     }
 
-    private fun updateImageStatus(viewState: CoinDetailViewState) =
-        flow<ViewData<CoinDetailViewState, CoinDetailViewEvent>> {
-            viewState.favoriteCoins?.find { coinResponse -> coinResponse.coinId == viewState.coinId }
+    private fun updateImageStatus(viewState: CoinDetailViewState, favoriteCoins: List<CoinResponse>?) : Boolean {
+            favoriteCoins?.find { coinResponse -> coinResponse.coinId == viewState.coinId }
                 ?.let {
                     firebaseService.updateFavorite(
                         firebaseService.getUid() ?: "",
-                        prepareRefreshUpdateFavoriteCoin(viewState)
+                        prepareRefreshUpdateFavoriteCoin(viewState.copy(favoriteCoins = favoriteCoins))
                     )
-                    emit(ViewData.State(viewState.copy(isFavorite = true)))
-
+                    return  true
                 } ?: kotlin.run {
-                emit(ViewData.State(viewState.copy(isFavorite = false)))
+                return  false
             }
         }
 
@@ -324,7 +316,7 @@ class CoinDetailUseCase @Inject constructor(
                             )
                         )
 
-                        updateImageStatus(viewState)
+                        updateImageStatus(viewState, it.data.coinList)
                     }
                     is ViewData.Event -> {
                         if (it.data is ViewEventWrapper.PageEvent && it.data.pageEvent is FavoriteCoinListViewEvent.SnackBarError) {
@@ -346,13 +338,7 @@ class CoinDetailUseCase @Inject constructor(
 
     private fun updateTimeInterval(viewState: CoinDetailViewState) =
         flow<ViewData<CoinDetailViewState, CoinDetailViewEvent>> {
-            getCoinHistory(
-                viewState,
-                viewState.coinDetail,
-                viewState.coinId,
-                viewState.favoriteCoins
-            )
-
+            getCoinHistory(viewState)
             with(viewState) {
                 val tempTime = timeInterval
                 tempTime.forEach {
@@ -367,17 +353,19 @@ sealed class CoinDetailViewEvent : IViewEvent {
     class LoadInitialData(val viewState: CoinDetailViewState, val coinId: String?) :
         CoinDetailViewEvent()
 
-    class OnLoadedCoinDetail(val coinDetail: CoinDetailResponse, val coinId: String?) :
+     object OnLoadedCoinDetail : CoinDetailViewEvent()
+
+    class LoadInitialFavoriteCoinList(
+        val viewState: CoinDetailViewState) :
         CoinDetailViewEvent()
 
-    class OnLoadedFavoriteCoinList(
-        val viewState: CoinDetailViewState,
-        val coinDetail: CoinDetailResponse,
-        val coinId: String?,
-        val favoriteCoinList: List<CoinResponse>?
-    ) :
+    object OnLoadedFavoriteCoinList : CoinDetailViewEvent()
+
+    class LoadInitialCoinHistory(
+        val viewState: CoinDetailViewState) :
         CoinDetailViewEvent()
 
+    class OnLoadedCoinHistory(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
     class OnSetTimeInterval(val viewState: CoinDetailViewState) :
         CoinDetailViewEvent()

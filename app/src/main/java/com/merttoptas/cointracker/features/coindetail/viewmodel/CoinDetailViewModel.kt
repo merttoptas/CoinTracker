@@ -38,16 +38,7 @@ class CoinDetailViewModel @Inject constructor(
             coinDetailUseCase.invoke(ViewEventWrapper.PageEvent(event)).collect {
                 when (it) {
                     is ViewData.State -> setState { it.data }
-                    is ViewData.Event -> {
-                        (it.data as ViewEventWrapper.PageEvent).pageEvent.let { event ->
-                            if (event is CoinDetailViewEvent.OnLoadedCoinDetail){
-                                setState { copy(coinDetail = event.coinDetail, coinId = event.coinId) }
-                            }
-                            if (event is CoinDetailViewEvent.OnLoadedFavoriteCoinList){
-                                setState { copy(coinDetail = event.coinDetail, coinId = event.coinId, favoriteCoins = event.favoriteCoinList) }
-                            }
-                        }
-                    }
+                    is ViewData.Event -> setEvent(it.data)
                 }
             }
         }
