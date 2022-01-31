@@ -1,5 +1,6 @@
 package com.merttoptas.cointracker.domain.usecase.coindetail
 
+import android.util.Log
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.datastate.DataState
@@ -27,12 +28,7 @@ class CoinDetailUseCase @Inject constructor(
 
     override fun invoke(event: ViewEventWrapper<CoinDetailViewEvent>) = flow {
         if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.LoadInitialData) {
-            emitAll(
-                getCoinDetail(
-                    coinId = event.pageEvent.coinId,
-                    viewState = event.pageEvent.viewState.copy(coinId = event.pageEvent.coinId)
-                )
-            )
+            emitAll(getCoinDetail(coinId = event.pageEvent.coinId, viewState = event.pageEvent.viewState.copy(coinId = event.pageEvent.coinId)))
         } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.LoadInitialFavoriteCoinList) {
             emitAll(getFavoriteCoinList(event.pageEvent.viewState))
         } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.LoadInitialCoinHistory) {
@@ -258,6 +254,15 @@ class CoinDetailUseCase @Inject constructor(
                     firebaseService.getUid() ?: "",
                     coin = viewState.coin
                 )?.let {
+                    emit(
+                        ViewData.Event(
+                            ViewEventWrapper.PageEvent(
+                                CoinDetailViewEvent.SuccessfullyFavoriteCoin(
+                                    viewState.copy(isFavorite = true)
+                                )
+                            )
+                        )
+                    )
                     emit(ViewData.State(viewState.copy(isFavorite = true)))
                 }
                 prepareFavoriteList(viewState)
@@ -284,9 +289,9 @@ class CoinDetailUseCase @Inject constructor(
                         firebaseService.getUid() ?: "",
                         prepareRefreshUpdateFavoriteCoin(viewState.copy(favoriteCoins = favoriteCoins))
                     )
-                    return  true
+                    return true
                 } ?: kotlin.run {
-                return  false
+                return false
             }
         }
 
@@ -311,12 +316,11 @@ class CoinDetailUseCase @Inject constructor(
                             ViewData.State(
                                 viewState.copy(
                                     favoriteCoins = it.data.coinList,
-                                    isLoading = false
+                                    isLoading = false,
+                                    isFavorite = updateImageStatus(viewState, it.data.coinList)
                                 )
                             )
                         )
-
-                        updateImageStatus(viewState, it.data.coinList)
                     }
                     is ViewData.Event -> {
                         if (it.data is ViewEventWrapper.PageEvent && it.data.pageEvent is FavoriteCoinListViewEvent.SnackBarError) {
@@ -355,25 +359,21 @@ sealed class CoinDetailViewEvent : IViewEvent {
 
      object OnLoadedCoinDetail : CoinDetailViewEvent()
 
-    class LoadInitialFavoriteCoinList(
-        val viewState: CoinDetailViewState) :
-        CoinDetailViewEvent()
+    class LoadInitialFavoriteCoinList(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
     object OnLoadedFavoriteCoinList : CoinDetailViewEvent()
 
-    class LoadInitialCoinHistory(
-        val viewState: CoinDetailViewState) :
-        CoinDetailViewEvent()
+    class LoadInitialCoinHistory(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
     class OnLoadedCoinHistory(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
-    class OnSetTimeInterval(val viewState: CoinDetailViewState) :
-        CoinDetailViewEvent()
+    class OnSetTimeInterval(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
-    class OnRefreshInterval(val viewState: CoinDetailViewState) :
-        CoinDetailViewEvent()
+    class OnRefreshInterval(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
     class OnUpdateFavoriteCoin(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
+
+    class SuccessfullyFavoriteCoin(val viewState: CoinDetailViewState) : CoinDetailViewEvent()
 
     class SnackBarError(val errorMessage: String?) : CoinDetailViewEvent()
 }

@@ -58,6 +58,8 @@ class CoinDetailFragment : BaseFragment<FragmentCoinDetailBinding>(), OnClickLis
                         viewModel.sendToEvent(CoinDetailViewEvent.LoadInitialFavoriteCoinList(viewModel.uiState.value))
                     }  else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.OnLoadedFavoriteCoinList) {
                         viewModel.sendToEvent(CoinDetailViewEvent.LoadInitialCoinHistory(viewModel.uiState.value))
+                    } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is CoinDetailViewEvent.SuccessfullyFavoriteCoin) {
+                        binding.isFavorite = event.pageEvent.viewState.isFavorite ?: false
                     }
                 }
             }
