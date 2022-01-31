@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/coinTrackerButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_register_button_height"
+        android:layout_marginHorizontal="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:background="@drawable/button_background"
+        tools:text="@string/login_sign_btn"
+        android:textSize="16sp" />
+
+</layout>

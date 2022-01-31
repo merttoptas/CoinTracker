@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="isEnabled"
+            type="boolean" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -76,23 +83,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.merttoptas.cointracker.features.component.CoinButton
             android:id="@+id/btnLogin"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/login_register_button_height"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginTop="@dimen/login_register_text_margin"
-            android:layout_marginEnd="@dimen/default_margin"
-            android:background="@drawable/button_background"
-            android:fontFamily="@font/poppins_bold"
-            android:text="@string/login_sign_btn"
-            android:textColor="@color/mainly_blue"
-            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            app:isButtonActive="@{isEnabled}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword"
-            app:tint="@color/white" />
+            app:setButtonText="@{@string/login_sign_btn}" />
 
         <TextView
             android:id="@+id/tvRegister"

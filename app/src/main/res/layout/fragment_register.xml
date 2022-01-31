@@ -95,25 +95,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.merttoptas.cointracker.features.component.CoinButton
             android:id="@+id/btnRegister"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/login_register_button_height"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginTop="@dimen/login_register_text_margin"
-            android:layout_marginEnd="@dimen/default_margin"
-            android:layout_marginBottom="@dimen/login_register_image_margin_top"
-            android:background="@drawable/button_background"
-            android:fontFamily="@font/poppins_bold"
-            android:text="@string/register_btn"
-            android:textColor="@color/mainly_blue"
-            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:isButtonActive="@{true}"
+            android:layout_marginBottom="5dp"
+            app:setButtonText="@{@string/register_btn}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword"
-            app:tint="@color/white" />
-
+            app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword">
+        </com.merttoptas.cointracker.features.component.CoinButton>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,7 +1,9 @@
 package com.merttoptas.cointracker.features.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.merttoptas.cointracker.R
@@ -38,6 +40,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     it.errorMessage?.let {
                         showSnackBar(this@LoginFragment, it, SnackBarEnum.ERROR)
                     }
+                    binding.isEnabled = it.emailState && it.passwordState
+                    Log.d("deneme1",  it.toString())
                 }
             }
 
@@ -59,6 +63,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         }
 
         onLogin()
+
+        binding.etEmail.doAfterTextChanged {
+            viewModel.sendToEvent(
+                LoginViewEvent.OnEnableButton(
+                    viewModel.uiState.value.copy(
+                        emailState = binding.etEmail.text.isNullOrEmpty().not(),
+                    )
+                )
+            )
+            binding.etPassword.doAfterTextChanged {
+                viewModel.sendToEvent(
+                    LoginViewEvent.OnEnableButton(
+                        viewModel.uiState.value.copy(
+                            passwordState = binding.etPassword.text.isNullOrEmpty().not(),
+                        )
+                    )
+                )
+            }
+        }
     }
 
     private fun onLogin() {

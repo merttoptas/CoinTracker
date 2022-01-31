@@ -30,6 +30,7 @@
         <entry key="app/src/main/res/layout/activity_login_and_register.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18541666666666667" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/component_coin_button.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_coin_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_coin_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.5" />

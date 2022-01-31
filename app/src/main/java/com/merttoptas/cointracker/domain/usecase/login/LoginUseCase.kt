@@ -26,6 +26,8 @@ class LoginUseCase @Inject constructor(
     override fun invoke(event: ViewEventWrapper<LoginViewEvent>) = flow {
         if (event is ViewEventWrapper.PageEvent && event.pageEvent is LoginViewEvent.OnLoginEvent) {
             emitAll(login(event.pageEvent.viewState))
+        } else if (event is ViewEventWrapper.PageEvent && event.pageEvent is LoginViewEvent.OnEnableButton) {
+            emitAll(onEnableButton(event.pageEvent.viewState))
         }
     }
 
@@ -35,8 +37,11 @@ class LoginUseCase @Inject constructor(
             emit(ViewData.State(viewState.copy(isLoading = false)))
             emit(
                 ViewData.Event(
-                    ViewEventWrapper.PageEvent(LoginViewEvent.SnackBarError(
-                        it))
+                    ViewEventWrapper.PageEvent(
+                        LoginViewEvent.SnackBarError(
+                            it
+                        )
+                    )
                 )
             )
         } ?: kotlin.run {
@@ -70,10 +75,16 @@ class LoginUseCase @Inject constructor(
         }
     }.flowOn(defaultDispatcher)
 
+    private fun onEnableButton(viewState: LoginViewState) =
+        flow<ViewData<LoginViewState, LoginViewEvent>> {
+            emit(ViewData.State(viewState))
+        }
+
 }
 
 sealed class LoginViewEvent : IViewEvent {
     class OnLoginEvent(val viewState: LoginViewState) : LoginViewEvent()
+    class OnEnableButton(val viewState: LoginViewState) : LoginViewEvent()
     object SuccessfullyLogin : LoginViewEvent()
     class SnackBarError(val message: String?) : LoginViewEvent()
 }
