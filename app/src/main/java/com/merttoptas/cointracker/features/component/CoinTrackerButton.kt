@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.merttoptas.cointracker.R
 import com.merttoptas.cointracker.databinding.ComponentCoinButtonBinding
 
-class CoinButton @JvmOverloads constructor(
+class CoinTrackerButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -38,7 +38,7 @@ class CoinButton @JvmOverloads constructor(
             requireAll = false
         )
         fun setButton(
-            view: CoinButton,
+            view: CoinTrackerButton,
             isButtonActive: Boolean,
             buttonText: String?
         ) {

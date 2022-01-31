@@ -95,7 +95,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
-        <com.merttoptas.cointracker.features.component.CoinButton
+        <com.merttoptas.cointracker.features.component.CoinTrackerButton
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -106,6 +106,6 @@
             app:setButtonText="@{@string/register_btn}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword">
-        </com.merttoptas.cointracker.features.component.CoinButton>
+        </com.merttoptas.cointracker.features.component.CoinTrackerButton>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
