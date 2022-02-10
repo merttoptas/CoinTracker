@@ -36,46 +36,47 @@ class RegisterUseCase @Inject constructor(
                 emit(ViewData.State(viewState.copy(isLoading = false)))
                 emit(
                     ViewData.Event(
-                        ViewEventWrapper.PageEvent(RegisterViewEvent.SnackBarError(
-                            it))
+                        ViewEventWrapper.PageEvent(
+                            RegisterViewEvent.SnackBarError(
+                                it
+                            )
+                        )
                     )
                 )
             } ?: kotlin.run {
-                firebaseService.register(viewState.email ?: "", viewState.password ?: "")
-                    .collect { registerData ->
-                        if (registerData.result) {
-                            dataStoreManager.updateUserLogin(true)
-                            emit(
-                                ViewData.State(
-                                    viewState.copy(
-                                        isLoading = false
-                                    )
-                                )
-                            )
-                            emit(
-                                ViewData.Event(
-                                    ViewEventWrapper.PageEvent(RegisterViewEvent.SuccessfullyRegister)
-                                )
-                            )
-                        } else {
-                            emit(
-                                ViewData.State(
-                                    viewState.copy(
-                                        isLoading = false
-                                    )
-                                )
-                            )
-                            emit(
-                                ViewData.Event(
-                                    ViewEventWrapper.PageEvent(RegisterViewEvent.SnackBarError(
-                                        registerData.error))
-                                )
-                            )
-                        }
-                    }
+                setFirebaseRegister(viewState)
             }
 
         }.flowOn(defaultDispatcher)
+
+    private fun setFirebaseRegister(viewState: RegisterViewState) =
+        flow<ViewData<RegisterViewState, RegisterViewEvent>> {
+            firebaseService.register(viewState.email ?: "", viewState.password ?: "")
+                .collect { registerData ->
+                    if (registerData.result) {
+                        dataStoreManager.updateUserLogin(true)
+                        emit(ViewData.State(viewState.copy(isLoading = false)))
+                        emit(ViewData.Event(ViewEventWrapper.PageEvent(RegisterViewEvent.SuccessfullyRegister)))
+                    } else {
+                        emit(
+                            ViewData.State(
+                                viewState.copy(
+                                    isLoading = false
+                                )
+                            )
+                        )
+                        emit(
+                            ViewData.Event(
+                                ViewEventWrapper.PageEvent(
+                                    RegisterViewEvent.SnackBarError(
+                                        registerData.error
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }
+        }
 }
 
 sealed class RegisterViewEvent : IViewEvent {

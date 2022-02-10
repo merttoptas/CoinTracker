@@ -36,76 +36,58 @@
 
         </TextView>
 
-        <EditText
+        <com.merttoptas.cointracker.features.component.CoinTrackerEditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_register_text_margin"
+            android:layout_marginHorizontal="@dimen/login_register_text_margin"
             android:layout_marginTop="@dimen/login_register_text_margin"
-            android:layout_marginEnd="@dimen/login_register_text_margin"
-            android:background="@drawable/background_edittext_rounded"
-            android:drawableStart="@drawable/ic_email"
-            android:drawablePadding="@dimen/login_register_image_padding"
-            android:hint="@string/login_email"
             android:inputType="textEmailAddress"
-            android:padding="@dimen/margin_medium"
-            app:drawableTint="@color/mainly_blue"
-            app:hintTextColor="@color/dark_grayish_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
+            app:setEditStartIcon="@{@drawable/ic_email}"
+            app:setEditTextHint="@{@string/login_email}" />
 
-        <EditText
+        <com.merttoptas.cointracker.features.component.CoinTrackerEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_register_text_margin"
+            android:layout_marginHorizontal="@dimen/login_register_text_margin"
             android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginEnd="@dimen/login_register_text_margin"
-            android:background="@drawable/background_edittext_rounded"
-            android:drawableStart="@drawable/ic_baseline_lock"
-            android:drawablePadding="@dimen/login_register_image_padding"
-            android:hint="@string/login_sign_btn"
             android:inputType="textPassword"
             android:maxLength="12"
-            android:padding="@dimen/margin_medium"
-            app:drawableTint="@color/mainly_blue"
-            app:hintTextColor="@color/dark_grayish_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+            app:layout_constraintTop_toBottomOf="@+id/etEmail"
+            app:setEditStartIcon="@{@drawable/ic_baseline_lock}"
+            app:setEditTextHint="@{@string/login_password}" />
 
-        <EditText
+        <com.merttoptas.cointracker.features.component.CoinTrackerEditText
             android:id="@+id/etConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_register_text_margin"
+            android:layout_marginHorizontal="@dimen/login_register_text_margin"
             android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginEnd="@dimen/login_register_text_margin"
-            android:background="@drawable/background_edittext_rounded"
-            android:drawableStart="@drawable/ic_baseline_lock"
-            android:drawablePadding="@dimen/login_register_image_padding"
-            android:hint="@string/register_confirm_password"
             android:inputType="textPassword"
             android:maxLength="12"
-            android:padding="@dimen/margin_medium"
-            app:drawableTint="@color/mainly_blue"
-            app:hintTextColor="@color/dark_grayish_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/etPassword"
+            app:setEditStartIcon="@{@drawable/ic_baseline_lock}"
+            app:setEditTextHint="@{@string/register_confirm_password}" />
 
         <com.merttoptas.cointracker.features.component.CoinTrackerButton
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
+            app:isButtonActive="@{true}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:isButtonActive="@{true}"
-            android:layout_marginBottom="5dp"
-            app:setButtonText="@{@string/register_btn}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword">
-        </com.merttoptas.cointracker.features.component.CoinTrackerButton>
+            app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword"
+            app:setButtonText="@{@string/register_btn}" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

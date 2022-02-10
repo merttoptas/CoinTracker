@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -30,6 +31,8 @@ class CoinTrackerButton @JvmOverloads constructor(
     fun isEnabled(isEnabled: Boolean) {
         this.isEnabled = isEnabled
     }
+
+    fun getButton(): AppCompatButton = binding.coinTrackerButton
 
     companion object {
         @JvmStatic

@@ -71,10 +71,6 @@ object RemoteDataModule {
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
-    @Singleton
-    @Provides
-    fun provideDataStoreManager(@ApplicationContext appContext: Context): DataStoreManager =
-        DataStoreManager(appContext)
 
     @Singleton
     @Provides

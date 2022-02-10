@@ -1,7 +1,6 @@
 package com.merttoptas.cointracker.features.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -41,14 +40,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         showSnackBar(this@LoginFragment, it, SnackBarEnum.ERROR)
                     }
                     binding.isEnabled = it.emailState && it.passwordState
-                    Log.d("deneme1",  it.toString())
                 }
             }
 
             launch {
                 viewModel.uiEvent.collect { event ->
                     if (event is ViewEventWrapper.PageEvent && event.pageEvent is LoginViewEvent.SuccessfullyLogin) {
-                           NavigationHelper.startMainActivity(
+                        NavigationHelper.startMainActivity(
                             requireActivity(),
                             requireContext(),
                             false
@@ -62,30 +60,31 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             }
         }
 
-        onLogin()
-
-        binding.etEmail.doAfterTextChanged {
+        binding.etEmail.getEditText().doAfterTextChanged {
             viewModel.sendToEvent(
                 LoginViewEvent.OnEnableButton(
                     viewModel.uiState.value.copy(
-                        emailState = binding.etEmail.text.isNullOrEmpty().not(),
+                        emailState = binding.etEmail.getText().isNullOrEmpty().not(),
                     )
                 )
             )
-            binding.etPassword.doAfterTextChanged {
+            binding.etPassword.getEditText().doAfterTextChanged {
                 viewModel.sendToEvent(
                     LoginViewEvent.OnEnableButton(
                         viewModel.uiState.value.copy(
-                            passwordState = binding.etPassword.text.isNullOrEmpty().not(),
+                            passwordState = binding.etPassword.getText().isNullOrEmpty().not(),
                         )
                     )
                 )
             }
         }
+
+        onLogin()
     }
 
     private fun onLogin() {
-        binding.btnLogin.setOnClickListener {
+
+        binding.btnLogin.getButton().setOnClickListener {
             binding.etEmail.setOnFocusChangeListener { view, focus ->
                 if (focus) {
                     hideKeyboard(view)
@@ -100,8 +99,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             viewModel.sendToEvent(
                 LoginViewEvent.OnLoginEvent(
                     viewModel.uiState.value.copy(
-                        email = binding.etEmail.text.trim().toString(),
-                        password = binding.etPassword.text.trim().toString()
+                        email = binding.etEmail.getText().trim().toString(),
+                        password = binding.etPassword.getText().trim().toString()
                     )
                 )
             )

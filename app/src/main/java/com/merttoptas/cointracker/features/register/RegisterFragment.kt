@@ -27,11 +27,11 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            btnRegister.setOnClickListener {
+            btnRegister.getButton().setOnClickListener {
                 viewModel.sendToEvent(RegisterViewEvent.OnLoginEvent(viewModel.uiState.value.copy(
-                    email = etEmail.text.trim().toString(),
-                    password = etPassword.text.trim().toString(),
-                    confirmPassword = etConfirmPassword.text.trim().toString(),
+                    email = etEmail.getText().trim().toString(),
+                    password = etPassword.getText().trim().toString(),
+                    confirmPassword = etConfirmPassword.getText().trim().toString(),
                 )))
             }
         }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <declare-styleable name="CoinTrackerEditText">
+        <attr name="android:inputType" />
+        <attr name="drawableStart" format="reference" />
+        <attr name="maxLines" format="integer" />
+        <attr name="maxLength" format="integer" />
+        <attr name="hint_text" format="string" />
+        <attr name="android:text" format="string" />
+    </declare-styleable>
+</resources>

@@ -1,6 +1,5 @@
 package com.merttoptas.cointracker.domain.usecase.coindetail
 
-import android.util.Log
 import com.merttoptas.cointracker.data.model.CoinResponse
 import com.merttoptas.cointracker.data.remote.service.FirebaseService
 import com.merttoptas.cointracker.domain.datastate.DataState

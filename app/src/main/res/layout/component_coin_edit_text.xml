@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/coinTrackerEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_edittext_rounded"
+        android:fontFamily="@font/poppins_medium"
+        android:padding="@dimen/margin_medium"
+        android:drawablePadding="@dimen/login_register_image_padding"
+        android:textSize="16sp"
+        app:drawableTint="@color/mainly_blue"
+        app:hintTextColor="@color/dark_grayish_blue"
+        tools:drawableStart="@drawable/ic_email"
+        tools:hint="@string/login_email" />
+</LinearLayout>
