@@ -1,6 +1,7 @@
 package com.merttoptas.cointracker.features.coinlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.viewModels
@@ -37,9 +38,9 @@ class CoinListFragment : BaseFragment<FragmentCoinListBinding>(), OnClickListene
             launch {
                 viewModel.uiState.collect {
                  //   if (it.isLoading) showProgress() else hideProgress()
-
+                    Log.d("deneme1", it.pageData.size.toString())
                     binding.rvCoinList.adapter = CoinListAdapter(this@CoinListFragment).apply {
-                        submitList(it.coinList)
+                        submitList(it.pageData)
                     }
                 }
             }

@@ -3,24 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="listener"
-            type="com.merttoptas.cointracker.features.coinlist.adapter.OnClickListener" />
-
-        <variable
-            name="dataHolder"
-            type="com.merttoptas.cointracker.domain.viewstate.coinlist.CoinItemViewItem" />
-
-    </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_medium"
         android:foreground="?android:attr/selectableItemBackground"
-        android:onClick="@{() -> listener.onClick(dataHolder.coinId)}"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
@@ -31,46 +19,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+
+            <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/coinsItemImageView"
                 android:layout_width="@dimen/cardview_image_width"
                 android:layout_height="@dimen/cardview_image_height"
+                android:background="@color/shimmer_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:loadUrlImage="@{dataHolder.image}" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/coinsItemNameTextView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginEnd="5dp"
                 android:ellipsize="end"
                 android:gravity="start"
-                android:text="@{dataHolder.name}"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toStartOf="@id/favouriteImageView"
                 app:layout_constraintStart_toEndOf="@id/coinsItemImageView"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Bitcoin" />
 
-            <TextView
+            <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/coinsItemSymbolTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
                 android:layout_marginTop="@dimen/margin_tiny"
-                android:text="@{dataHolder.symbol}"
+                android:layout_marginEnd="5dp"
                 android:textColor="@color/subtitle_text_color"
+                app:layout_constraintEnd_toStartOf="@+id/favouriteImageView"
                 app:layout_constraintStart_toStartOf="@id/coinsItemNameTextView"
                 app:layout_constraintTop_toBottomOf="@id/coinsItemNameTextView"
                 tools:text="BTC" />
 
-            <LinearLayout
+
+            <com.facebook.shimmer.ShimmerFrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_tiny"
+                android:layout_marginEnd="5dp"
                 android:gravity="center"
                 android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/favouriteImageView"
                 app:layout_constraintStart_toStartOf="@id/coinsItemNameTextView"
                 app:layout_constraintTop_toBottomOf="@id/coinsItemSymbolTextView">
 
@@ -80,9 +73,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/coin_list_item_text_size"
-                    app:doubleToString="@{dataHolder.currentPrice}"
-                    tools:text="99879.45" />
+                    android:textSize="@dimen/coin_list_item_text_size" />
 
                 <TextView
                     android:id="@+id/coinsItemChangeTextView"
@@ -91,8 +82,6 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/margin_tiny"
                     android:textSize="@dimen/coin_list_item_text_size"
-                    app:percentToString="@{dataHolder.changePercent}"
-                    tools:text="+123.45"
                     tools:textColor="@color/dark_green" />
 
                 <ImageView
@@ -100,13 +89,11 @@
                     android:layout_width="@dimen/margin_normal"
                     android:layout_height="@dimen/margin_normal"
                     android:layout_marginStart="@dimen/margin_tiny"
-                    android:gravity="center"
-                    app:percentStatusIV="@{dataHolder.changePercent}"
-                    tools:src="@drawable/ic_arrow_downward" />
+                    android:gravity="center" />
 
-            </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
-            <ImageView
+            <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/favouriteImageView"
                 android:layout_width="@dimen/image_icon_size"
                 android:layout_height="@dimen/image_icon_size"

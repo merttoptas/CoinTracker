@@ -11,7 +11,7 @@ import com.merttoptas.cointracker.domain.usecase.IUseCase
 import com.merttoptas.cointracker.domain.viewstate.base.IViewEvent
 import com.merttoptas.cointracker.domain.viewstate.base.ViewData
 import com.merttoptas.cointracker.domain.viewstate.base.ViewEventWrapper
-import com.merttoptas.cointracker.domain.viewstate.coinlist.CoinListViewState
+import com.merttoptas.cointracker.domain.viewstate.coinlist.*
 import com.merttoptas.cointracker.utils.Utils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collect
@@ -27,7 +27,7 @@ class CoinListUseCase @Inject constructor(
     private val coinDao: CoinDatabaseRepository,
 ) : IUseCase<CoinListViewEvent, CoinListViewState> {
     override fun getInitialData(event: CoinListViewEvent?): CoinListViewState {
-        return CoinListViewState()
+        return CoinListViewState(pageData = listOf(CoinListItemLoadingViewItem))
     }
 
     override fun invoke(event: ViewEventWrapper<CoinListViewEvent>) = flow {
@@ -43,28 +43,58 @@ class CoinListUseCase @Inject constructor(
             coinRepository.getCoinList().collect {
                 when (it) {
                     is DataState.Success -> {
-                        emit(ViewData.State(viewState.copy(
-                            coinList = it.data,
-                            isLoading = false
-                        )))
+                        val pageElements = arrayListOf<CoinListViewItem>()
+                        it.data.map {
+                            pageElements.add(
+                                CoinItemViewItem(
+                                    it.coinId,
+                                    it.symbol,
+                                    it.name,
+                                    it.image,
+                                    it.currentPrice,
+                                    it.changePercent
+                                )
+                            )
+                        }
+
+
+                        emit(
+                            ViewData.State(
+                                viewState.copy(
+                                    pageData = pageElements,
+                                    isLoading = false
+                                )
+                            )
+                        )
                         insertCoinListDataBase(it.data)
                         getFavoriteCoins(viewState, it.data)
                     }
                     is DataState.Error -> {
-                        emit(ViewData.State(viewState.copy(
-                            isLoading = false
-                        )))
+                        emit(
+                            ViewData.State(
+                                viewState.copy(
+                                    isLoading = false
+                                )
+                            )
+                        )
                         emit(
                             ViewData.Event(
-                                ViewEventWrapper.PageEvent(CoinListViewEvent.SnackBarError(
-                                    it.apiError?.message))
+                                ViewEventWrapper.PageEvent(
+                                    CoinListViewEvent.SnackBarError(
+                                        it.apiError?.message
+                                    )
+                                )
                             )
                         )
                     }
                     is DataState.Loading -> {
-                        emit(ViewData.State(viewState.copy(
-                            isLoading = true
-                        )))
+                        emit(
+                            ViewData.State(
+                                viewState.copy(
+                                    isLoading = true
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -72,9 +102,13 @@ class CoinListUseCase @Inject constructor(
 
     private fun getFavoriteCoins(viewState: CoinListViewState, list: List<CoinResponse>) =
         flow<ViewData<CoinListViewState, CoinListViewEvent>> {
-            emit(ViewData.State(viewState.copy(
-                favoriteCoins = getFirebaseFavoriteCoin()
-            )))
+            emit(
+                ViewData.State(
+                    viewState.copy(
+                        favoriteCoins = getFirebaseFavoriteCoin()
+                    )
+                )
+            )
             updateFavoriteCoin(viewState, list)
         }
 
@@ -146,12 +180,30 @@ class CoinListUseCase @Inject constructor(
         flow<ViewData<CoinListViewState, CoinListViewEvent>> {
             coinDao.searchCoin(Utils.getSearchQuery(viewState.query ?: ""))
                 .collect { coinListEntity ->
+                    val pageElements = arrayListOf<CoinListViewItem>()
                     coinListEntity.map { safeList ->
                         safeList.toCoinResponse()
                     }.let {
-                        emit(ViewData.State(viewState.copy(
-                            filteredCoinList = it
-                        )))
+                        it.map {
+                            pageElements.add(
+                                CoinItemViewItem(
+                                    it.coinId,
+                                    it.symbol,
+                                    it.name,
+                                    it.image,
+                                    it.currentPrice,
+                                    it.changePercent
+                                )
+                            )
+                        }
+
+                        emit(
+                            ViewData.State(
+                                viewState.copy(
+                                    filteredCoinList = pageElements
+                                )
+                            )
+                        )
                     }
                 }
         }.flowOn(defaultDispatcher)

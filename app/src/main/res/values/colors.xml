@@ -15,4 +15,5 @@
     <color name="subtitle_text_color">#616161</color>
     <color name="dark_grayish_blue">#7A8089</color>
     <color name="light_grayish_blue">#e1e8ee</color>
+    <color name="shimmer_color">#ccc</color>
 </resources>
